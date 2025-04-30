@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Code } from 'lucide-react';
 import { toast } from 'sonner';
 import BpmnViewer from '@/components/bpmn/BpmnViewer';
 import InstanceSummary from '@/components/instances/InstanceSummary';
 import TaskTimeline from '@/components/instances/TaskTimeline';
+import ProcessVariables from '@/components/instances/ProcessVariables';
 import { ProcessInstance } from '@/context/AppContext';
 import api from '@/services/apiService';
 
@@ -17,6 +18,8 @@ const ProcessDetails: React.FC = () => {
   const [diagramLoading, setDiagramLoading] = useState(true);
   const [tasks, setTasks] = useState<any[]>([]);
   const [tasksLoading, setTasksLoading] = useState(true);
+  const [variables, setVariables] = useState<any[]>([]);
+  const [variablesLoading, setVariablesLoading] = useState(true);
   
   // Fetch process instance
   useEffect(() => {
@@ -81,6 +84,35 @@ const ProcessDetails: React.FC = () => {
     fetchTasks();
   }, [processId]);
   
+  // Fetch process variables
+  useEffect(() => {
+    const fetchVariables = async () => {
+      if (!processId) return;
+      
+      setVariablesLoading(true);
+      
+      try {
+        // Mocking variables data - replace with API call in real app
+        const mockVariables = [
+          { name: 'orderId', value: '12345', type: 'String', scope: 'Process' },
+          { name: 'customer', value: '{"name":"John Doe","email":"john@example.com"}', type: 'Json', scope: 'Process' },
+          { name: 'amount', value: '199.99', type: 'Double', scope: 'Process' },
+          { name: 'approved', value: 'true', type: 'Boolean', scope: 'Task' },
+          { name: 'shippingAddress', value: '123 Main St, City', type: 'String', scope: 'Process' },
+          { name: 'paymentMethod', value: 'credit_card', type: 'String', scope: 'Process' },
+        ];
+        setVariables(mockVariables);
+      } catch (error) {
+        console.error('Error fetching process variables:', error);
+        toast.error('Failed to load process variables');
+      } finally {
+        setVariablesLoading(false);
+      }
+    };
+    
+    fetchVariables();
+  }, [processId]);
+  
   // Determine active element in diagram
   const getActiveElementId = () => {
     if (!tasks.length) return undefined;
@@ -103,8 +135,8 @@ const ProcessDetails: React.FC = () => {
     <div className="space-y-6">
       <InstanceSummary instance={instance} loading={loading} />
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-8">
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             <h2 className="text-lg font-semibold mb-4">Process Diagram</h2>
             
@@ -124,10 +156,20 @@ const ProcessDetails: React.FC = () => {
           </div>
         </div>
         
-        <div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-lg font-semibold mb-4">Task History</h2>
-            <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
+        <div className="lg:col-span-4">
+          <div className="grid grid-cols-1 gap-6">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="flex items-center mb-4">
+                <Code className="w-5 h-5 text-primary-600 mr-2" />
+                <h2 className="text-lg font-semibold">Process Variables</h2>
+              </div>
+              <ProcessVariables variables={variables} isLoading={variablesLoading} />
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-lg font-semibold mb-4">Task History</h2>
+              <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
+            </div>
           </div>
         </div>
       </div>
