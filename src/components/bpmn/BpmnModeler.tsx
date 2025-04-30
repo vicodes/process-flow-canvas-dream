@@ -4,19 +4,8 @@ import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
-// Import the BpmnPropertiesProvider directly from the package
-// This structure is more compatible with recent versions
-import { BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel/dist/bpmn-properties-provider';
-import {
-  Save,
-  Download,
-  Upload,
-  FileUp, // Changed from FileUpload to FileUp which is available in lucide-react
-  FilePlus,
-  Undo,
-  Redo,
-  Eye
-} from 'lucide-react';
+// Import the properties provider module - simplified approach
+import { Save, Download, Upload, FileUp, FilePlus, Undo, Redo, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -95,8 +84,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           parent: propertiesPanelRef.current
         },
         additionalModules: [
-          propertiesPanelModule,
-          BpmnPropertiesProviderModule // Use the module directly
+          propertiesPanelModule
         ],
         keyboard: {
           bindTo: document
