@@ -3,9 +3,8 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-// Import the properties panel module properly - it doesn't have a default export
-import { BpmnPropertiesPanelModule } from 'bpmn-js-properties-panel';
-import { BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel/dist/bpmn-properties-provider';
+// Import the properties panel module properly
+import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel';
 import { Save, Download, Upload, FileUp, FilePlus, Undo, Redo, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -485,3 +484,4 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
 };
 
 export default BpmnModeler;
+
