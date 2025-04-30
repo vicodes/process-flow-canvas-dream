@@ -3,14 +3,14 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
+// Using the standard properties provider instead of the Camunda one
+import { BpmnPropertiesProvider } from 'bpmn-js-properties-panel/lib/provider/bpmn';
 import {
   Save,
   Download,
   Upload,
-  FileUpload,
+  FileUp, // Changed from FileUpload to FileUp which is available in lucide-react
   FilePlus,
   Undo,
   Redo,
@@ -59,6 +59,13 @@ interface BpmnModelerProps {
   onSave?: (xml: string) => void;
 }
 
+// Custom type for canvas
+interface BpmnCanvas {
+  zoom: (type: string, options?: any) => void;
+  hideLayer: (layer: string) => void;
+  showLayer: (layer: string) => void;
+}
+
 const BpmnModeler: React.FC<BpmnModelerProps> = ({ 
   initialXml = emptyBpmn, 
   onSave 
@@ -88,7 +95,10 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         },
         additionalModules: [
           propertiesPanelModule,
-          propertiesProviderModule
+          {
+            __init__: ['propertiesProvider'],
+            propertiesProvider: ['type', BpmnPropertiesProvider]
+          }
         ],
         keyboard: {
           bindTo: document
@@ -99,17 +109,17 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
 
       // Import XML
       modeler.importXML(initialXml)
-        .then(({ warnings }) => {
+        .then(({ warnings }: { warnings: any[] }) => {
           if (warnings.length) {
             console.warn('BPMN import warnings:', warnings);
           }
           
-          const canvas = modeler.get('canvas');
+          const canvas = modeler.get('canvas') as BpmnCanvas;
           canvas.zoom('fit-viewport', 'auto');
           
           setIsLoaded(true);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error('BPMN import error:', err);
           toast.error('Failed to load BPMN diagram');
         });
@@ -132,7 +142,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
   useEffect(() => {
     if (!bpmnModelerRef.current || !isLoaded) return;
 
-    const canvas = bpmnModelerRef.current.get('canvas');
+    const canvas = bpmnModelerRef.current.get('canvas') as BpmnCanvas;
     const eventBus = bpmnModelerRef.current.get('eventBus');
     
     if (isViewOnly) {
@@ -140,7 +150,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
       canvas.hideLayer('controls');
       
       // Disable direct editing
-      eventBus.on('directEditing.activate', (event) => {
+      eventBus.on('directEditing.activate', (event: any) => {
         event.preventDefault();
         return false;
       });
@@ -150,7 +160,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
       
       // Re-enable direct editing by re-importing the XML
       bpmnModelerRef.current.saveXML({ format: true })
-        .then(({ xml }) => {
+        .then(({ xml }: { xml: string }) => {
           bpmnModelerRef.current.importXML(xml);
         });
     }
@@ -185,7 +195,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         .then(() => {
           toast.success('New diagram created');
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error('Error creating new diagram:', err);
           toast.error('Failed to create new diagram');
         });
@@ -197,13 +207,13 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     if (!bpmnModelerRef.current) return;
     
     bpmnModelerRef.current.saveXML({ format: true })
-      .then(({ xml }) => {
+      .then(({ xml }: { xml: string }) => {
         if (onSave) {
           onSave(xml);
         }
         toast.success('Diagram saved');
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error('Save error:', err);
         toast.error('Failed to save diagram');
       });
@@ -216,28 +226,28 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     try {
       if (format === 'xml') {
         bpmnModelerRef.current.saveXML({ format: true })
-          .then(({ xml }) => {
+          .then(({ xml }: { xml: string }) => {
             downloadFile(xml, 'diagram.bpmn', 'application/xml');
             toast.success('BPMN file downloaded');
           })
-          .catch((err) => {
+          .catch((err: any) => {
             console.error('XML export error:', err);
             toast.error('Failed to export diagram');
           });
       } else if (format === 'svg') {
         bpmnModelerRef.current.saveSVG()
-          .then(({ svg }) => {
+          .then(({ svg }: { svg: string }) => {
             downloadFile(svg, 'diagram.svg', 'image/svg+xml');
             toast.success('SVG diagram downloaded');
           })
-          .catch((err) => {
+          .catch((err: any) => {
             console.error('SVG export error:', err);
             toast.error('Failed to export diagram');
           });
       } else {
         // For PNG, we use saveSVG and convert it
         bpmnModelerRef.current.saveSVG()
-          .then(({ svg }) => {
+          .then(({ svg }: { svg: string }) => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const img = new Image();
@@ -258,7 +268,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             
             img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
           })
-          .catch((err) => {
+          .catch((err: any) => {
             console.error('PNG export error:', err);
             toast.error('Failed to export diagram');
           });
@@ -304,7 +314,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             fileInputRef.current.value = '';
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error('Import error:', err);
           toast.error('Failed to import diagram. Please check the file format.');
         });
@@ -348,7 +358,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           toast.success('Diagram imported successfully');
           setIsUploadDialogOpen(false);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error('Import error:', err);
           toast.error('Failed to import diagram. Please check the file format.');
         });
@@ -409,7 +419,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
               >
-                <FileUpload className="w-12 h-12 mx-auto text-gray-400" />
+                <FileUp className="w-12 h-12 mx-auto text-gray-400" />
                 <p className="mt-4 mb-2 text-gray-600">Drag and drop a BPMN file here</p>
                 <p className="text-sm text-gray-500 mb-4">or</p>
                 <div className="flex justify-center">
