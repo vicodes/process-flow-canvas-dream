@@ -1,10 +1,19 @@
 
 import React, { useState } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Settings, Cpu, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Message {
   id: string;
@@ -16,6 +25,8 @@ interface BpmnGeneratorChatProps {
   onBpmnGenerated: (xml: string) => void;
 }
 
+type AIModel = 'gpt-4o' | 'gpt-4o-mini' | 'gpt-4.5-preview';
+
 const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -26,6 +37,7 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o-mini');
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,11 +57,16 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
     try {
       // In a real implementation, this would call an API to generate BPMN
       // For now, we'll simulate a response after a brief delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+      
+      // Display which model is generating the response
+      const modelInfo = selectedModel === 'gpt-4o' ? 'powerful' : 
+                       selectedModel === 'gpt-4o-mini' ? 'efficient' :
+                       'advanced';
       
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `I've generated a BPMN diagram based on your description: "${input}"`,
+        content: `Using the ${modelInfo} model, I've generated a BPMN diagram based on your description: "${input}"`,
         isUser: false,
       };
       
@@ -182,8 +199,44 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
 
   return (
     <div className="flex flex-col h-full border rounded-md bg-white overflow-hidden">
-      <div className="p-3 border-b bg-primary-50">
-        <h2 className="font-semibold">BPMN Generator Assistant</h2>
+      <div className="p-3 border-b bg-primary-50 flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          <Bot className="h-5 w-5 text-primary-600" />
+          <h2 className="font-semibold">BPMN Generator Assistant</h2>
+        </div>
+        <div className="flex items-center">
+          <Select value={selectedModel} onValueChange={(value) => setSelectedModel(value as AIModel)}>
+            <SelectTrigger className="w-[180px] h-8 text-xs">
+              <SelectValue placeholder="Select model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>AI Models</SelectLabel>
+                <SelectItem value="gpt-4o-mini">
+                  <div className="flex items-center">
+                    <Cpu className="mr-2 h-4 w-4" />
+                    <span>GPT-4o Mini (Fast)</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="gpt-4o">
+                  <div className="flex items-center">
+                    <Cpu className="mr-2 h-4 w-4" />
+                    <span>GPT-4o (Balanced)</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="gpt-4.5-preview">
+                  <div className="flex items-center">
+                    <Cpu className="mr-2 h-4 w-4" />
+                    <span>GPT-4.5 Preview (Best)</span>
+                  </div>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button variant="ghost" size="icon" className="ml-2">
+            <Settings className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       
       <ScrollArea className="flex-1 p-4">
@@ -192,18 +245,27 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
             <div
               key={message.id}
               className={cn(
-                'max-w-[80%] rounded-lg p-3',
+                'max-w-[85%] rounded-lg p-3',
                 message.isUser
                   ? 'bg-primary-100 text-primary-900 ml-auto'
                   : 'bg-gray-100 text-gray-900'
               )}
             >
-              {message.content}
+              <div className={cn(
+                'text-xs mb-1 font-semibold',
+                message.isUser ? 'text-primary-600' : 'text-gray-500'
+              )}>
+                {message.isUser ? 'You' : 'Assistant'}
+              </div>
+              <div className="text-sm">
+                {message.content}
+              </div>
             </div>
           ))}
           
           {isLoading && (
             <div className="bg-gray-100 text-gray-900 max-w-[80%] rounded-lg p-3">
+              <div className="text-xs mb-1 font-semibold text-gray-500">Assistant</div>
               <div className="flex space-x-2">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>

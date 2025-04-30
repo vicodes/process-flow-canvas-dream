@@ -5,6 +5,7 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 // Import the properties panel module properly - it doesn't have a default export
 import { BpmnPropertiesPanelModule } from 'bpmn-js-properties-panel';
+import { BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel/dist/bpmn-properties-provider';
 import { Save, Download, Upload, FileUp, FilePlus, Undo, Redo, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -44,16 +45,16 @@ const emptyBpmn = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 
-interface BpmnModelerProps {
-  initialXml?: string;
-  onSave?: (xml: string) => void;
-}
-
 // Custom type for canvas
 interface BpmnCanvas {
   zoom: (type: string, options?: any) => void;
   hideLayer: (layer: string) => void;
   showLayer: (layer: string) => void;
+}
+
+interface BpmnModelerProps {
+  initialXml?: string;
+  onSave?: (xml: string) => void;
 }
 
 const BpmnModeler: React.FC<BpmnModelerProps> = ({ 
@@ -84,7 +85,8 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           parent: propertiesPanelRef.current
         },
         additionalModules: [
-          BpmnPropertiesPanelModule // Use the named import
+          BpmnPropertiesPanelModule,
+          BpmnPropertiesProviderModule
         ],
         keyboard: {
           bindTo: document
@@ -100,7 +102,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             console.warn('BPMN import warnings:', warnings);
           }
           
-          const canvas = modeler.get('canvas');
+          const canvas = modeler.get('canvas') as BpmnCanvas;
           canvas.zoom('fit-viewport', 'auto');
           
           setIsLoaded(true);
@@ -130,17 +132,23 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     if (!bpmnModelerRef.current || !isLoaded) return;
     
     console.log("Toggle view mode:", isViewOnly);
-    const canvas = bpmnModelerRef.current.get('canvas');
+    const canvas = bpmnModelerRef.current.get('canvas') as BpmnCanvas;
     const eventBus = bpmnModelerRef.current.get('eventBus');
 
     try {
       if (isViewOnly) {
-        // Just disable direct editing for view mode
+        // Hide controls for view mode
+        canvas.hideLayer('controls');
+        
+        // Disable direct editing
         eventBus.on('directEditing.activate', (event: any) => {
           event.preventDefault();
           return false;
         });
       } else {
+        // Show controls for edit mode
+        canvas.showLayer('controls');
+        
         // Re-enable direct editing by re-importing the XML
         bpmnModelerRef.current.saveXML({ format: true })
           .then(({ xml }: { xml: string }) => {
