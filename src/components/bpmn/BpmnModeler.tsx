@@ -4,8 +4,9 @@ import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
-// Using the standard properties provider instead of the Camunda one
-import { BpmnPropertiesProvider } from 'bpmn-js-properties-panel/lib/provider/bpmn';
+// Import the BpmnPropertiesProvider directly from the package
+// This structure is more compatible with recent versions
+import { BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel/dist/bpmn-properties-provider';
 import {
   Save,
   Download,
@@ -95,10 +96,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         },
         additionalModules: [
           propertiesPanelModule,
-          {
-            __init__: ['propertiesProvider'],
-            propertiesProvider: ['type', BpmnPropertiesProvider]
-          }
+          BpmnPropertiesProviderModule // Use the module directly
         ],
         keyboard: {
           bindTo: document
