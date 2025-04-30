@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,67 +38,218 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom properties for the app */
+    --primary-color: #4F46E5;
+    --secondary-color: #14B8A6;
+    --success-color: #10B981;
+    --warning-color: #F59E0B;
+    --danger-color: #EF4444;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --bg-gradient: linear-gradient(135deg, #F9FAFB, #E5E7EB);
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* ... keep existing code (dark mode variables) ... */
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+  
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    letter-spacing: 0.01em;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-wide;
+  }
+
+  h1 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  h2 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+
+  h3 {
+    @apply text-lg md:text-xl;
+  }
+
+  a {
+    @apply text-primary-700 hover:text-primary-800 transition-colors;
+  }
+
+  button {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  button:focus-visible {
+    @apply outline-2 outline-primary-700 ring-2 ring-primary-700/50;
+  }
+}
+
+/* Additional custom styles */
+@layer components {
+  /* Glassmorphism utility */
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+
+  /* Neumorphism utility */
+  .neumorphic {
+    @apply bg-white shadow-[5px_5px_15px_rgba(0,0,0,0.1),-5px_-5px_15px_rgba(255,255,255,0.8)] border border-gray-100;
+  }
+
+  /* Card with gradient border */
+  .card-gradient-border {
+    @apply border-2 border-transparent bg-white relative;
+    background-clip: padding-box;
+  }
+  .card-gradient-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-lg -z-10 m-[-2px];
+    background: linear-gradient(135deg, #4F46E5, #14B8A6);
+  }
+
+  /* Animated button hover states */
+  .btn-hover-glow {
+    @apply transition-all duration-300;
+  }
+  .btn-hover-glow:hover {
+    @apply transform scale-105 shadow-[0_0_10px_rgba(79,70,229,0.5)];
+  }
+
+  /* Timeline dot */
+  .timeline-dot {
+    @apply w-4 h-4 rounded-full border-2 border-white;
+  }
+  .timeline-dot.active {
+    @apply bg-success animate-pulse;
+  }
+  .timeline-dot.completed {
+    @apply bg-primary-700;
+  }
+  .timeline-dot.pending {
+    @apply bg-warning;
+  }
+  .timeline-dot.failed {
+    @apply bg-destructive;
+  }
+
+  /* Status badges */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .status-badge.active {
+    @apply bg-success/10 text-success animate-pulse;
+  }
+  .status-badge.completed {
+    @apply bg-primary-100 text-primary-800;
+  }
+  .status-badge.pending {
+    @apply bg-warning/10 text-warning;
+  }
+  .status-badge.failed {
+    @apply bg-destructive/10 text-destructive;
+  }
+
+  /* Table hover effects */
+  .table-row-hover {
+    @apply transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-md;
+  }
+
+  /* BPMN specific styles */
+  .bpmn-container {
+    @apply w-full h-full relative bg-white/50 backdrop-blur-sm shadow-md rounded-lg overflow-hidden;
+  }
+
+  .bpmn-viewer-container {
+    @apply border border-gray-200 rounded-lg bg-white/80 shadow-inner h-full;
+  }
+
+  .bpmn-controls {
+    @apply absolute bottom-4 right-4 flex space-x-2 glass px-3 py-2 rounded-lg;
+  }
+
+  .bpmn-control-btn {
+    @apply p-2 rounded-md hover:bg-gray-100 transition-colors;
+  }
+
+  /* Active node highlighting in BPMN */
+  .bpmn-highlight {
+    @apply animate-glow;
+  }
+
+  /* Sidebar nav item */
+  .nav-item {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-600;
+  }
+  .nav-item:hover {
+    @apply bg-primary-100 text-primary-700;
+  }
+  .nav-item.active {
+    @apply bg-gradient-to-r from-primary-700 to-secondary-500 text-white;
+  }
+  .nav-item .icon {
+    @apply transition-transform duration-300;
+  }
+  .nav-item:hover .icon {
+    @apply transform scale-110;
+  }
+}
+
+/* BPMN-JS Custom Styling Overrides */
+:root {
+  --bpmn-primary-color: #4F46E5;
+  --bpmn-secondary-color: #14B8A6;
+}
+
+/* This will be applied to the BPMN-JS elements to match our theme */
+.djs-container .djs-element.highlighted {
+  stroke: var(--bpmn-primary-color) !important;
+  stroke-width: 2px !important;
+  animation: glow 1.5s ease-in-out infinite;
+}
+
+.djs-container .djs-shape.bpmn-task {
+  fill: rgba(79, 70, 229, 0.1) !important; /* Light indigo for tasks */
+}
+
+.djs-container .djs-shape.bpmn-gateway {
+  fill: rgba(20, 184, 166, 0.1) !important; /* Light teal for gateways */
+}
+
+.djs-container .djs-shape.bpmn-event {
+  fill: #FFFFFF !important;
+  stroke: var(--bpmn-primary-color) !important;
+}
+
+.djs-palette {
+  border-color: #E5E7EB !important;
+  background-color: #FFFFFF !important;
+}
+
+.djs-popup {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0.5rem !important;
 }
