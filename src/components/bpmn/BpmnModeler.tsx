@@ -100,7 +100,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             console.warn('BPMN import warnings:', warnings);
           }
           
-          const canvas = modeler.get('canvas') as BpmnCanvas;
+          const canvas = modeler.get('canvas');
           canvas.zoom('fit-viewport', 'auto');
           
           setIsLoaded(true);
@@ -113,6 +113,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
   }, [initialXml]);
 
   useEffect(() => {
+    console.log("Initializing BPMN modeler");
     initBpmnModeler();
 
     return () => {
@@ -127,28 +128,27 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
   // Toggle view mode
   useEffect(() => {
     if (!bpmnModelerRef.current || !isLoaded) return;
-
-    const canvas = bpmnModelerRef.current.get('canvas') as BpmnCanvas;
-    const eventBus = bpmnModelerRef.current.get('eventBus');
     
-    if (isViewOnly) {
-      // Disable interactions
-      canvas.hideLayer('controls');
-      
-      // Disable direct editing
-      eventBus.on('directEditing.activate', (event: any) => {
-        event.preventDefault();
-        return false;
-      });
-    } else {
-      // Enable interactions
-      canvas.showLayer('controls');
-      
-      // Re-enable direct editing by re-importing the XML
-      bpmnModelerRef.current.saveXML({ format: true })
-        .then(({ xml }: { xml: string }) => {
-          bpmnModelerRef.current.importXML(xml);
+    console.log("Toggle view mode:", isViewOnly);
+    const canvas = bpmnModelerRef.current.get('canvas');
+    const eventBus = bpmnModelerRef.current.get('eventBus');
+
+    try {
+      if (isViewOnly) {
+        // Just disable direct editing for view mode
+        eventBus.on('directEditing.activate', (event: any) => {
+          event.preventDefault();
+          return false;
         });
+      } else {
+        // Re-enable direct editing by re-importing the XML
+        bpmnModelerRef.current.saveXML({ format: true })
+          .then(({ xml }: { xml: string }) => {
+            bpmnModelerRef.current.importXML(xml);
+          });
+      }
+    } catch (error) {
+      console.error("Error toggling view mode:", error);
     }
   }, [isViewOnly, isLoaded]);
 

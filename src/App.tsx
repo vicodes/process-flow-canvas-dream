@@ -9,6 +9,7 @@ import AppLayout from "./components/layout/AppLayout";
 import ProcessList from "./pages/ProcessList";
 import ProcessDetails from "./pages/ProcessDetails";
 import ProcessModeler from "./pages/ProcessModeler";
+import BpmnGenerator from "./pages/BpmnGenerator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ const App = () => (
               <Route index element={<ProcessList />} />
               <Route path="processes/:processId" element={<ProcessDetails />} />
               <Route path="modeler" element={<ProcessModeler />} />
+              <Route path="generator" element={<BpmnGenerator />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

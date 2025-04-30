@@ -1,13 +1,11 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import BpmnModeler from '@/components/bpmn/BpmnModeler';
 import { useApp } from '@/context/AppContext';
 import { v4 as uuidv4 } from '@/utils/uuid';
 
 const ProcessModeler: React.FC = () => {
-  const navigate = useNavigate();
   const { saveDiagram } = useApp();
   const [currentDiagramId] = useState(`diagram-${uuidv4()}`);
   
