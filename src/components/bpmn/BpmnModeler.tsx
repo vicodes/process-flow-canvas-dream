@@ -44,13 +44,6 @@ const emptyBpmn = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 
-// Custom type for canvas
-interface BpmnCanvas {
-  zoom: (type: string, options?: any) => void;
-  hideLayer: (layer: string) => void;
-  showLayer: (layer: string) => void;
-}
-
 interface BpmnModelerProps {
   initialXml?: string;
   onSave?: (xml: string) => void;
@@ -101,7 +94,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             console.warn('BPMN import warnings:', warnings);
           }
           
-          const canvas = modeler.get('canvas') as BpmnCanvas;
+          const canvas = modeler.get('canvas');
           canvas.zoom('fit-viewport', 'auto');
           
           setIsLoaded(true);
@@ -126,32 +119,42 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     };
   }, [initBpmnModeler]);
 
-  // Toggle view mode
+  // Toggle view mode - Fixing the preview mode issue
   useEffect(() => {
     if (!bpmnModelerRef.current || !isLoaded) return;
     
     console.log("Toggle view mode:", isViewOnly);
-    const canvas = bpmnModelerRef.current.get('canvas') as BpmnCanvas;
-    const eventBus = bpmnModelerRef.current.get('eventBus');
-
+    const modeler = bpmnModelerRef.current;
+    
     try {
       if (isViewOnly) {
-        // Hide controls for view mode
-        canvas.hideLayer('controls');
+        // For view mode, disable interactions
+        modeler.get('palette').hide();
+        modeler.get('contextPad').hide();
         
         // Disable direct editing
-        eventBus.on('directEditing.activate', (event: any) => {
+        const eventBus = modeler.get('eventBus');
+        eventBus.on('element.dblclick', function(event: any) {
           event.preventDefault();
           return false;
         });
+        
+        // Disable drag and select
+        modeler.get('dragging').setOptions({ disabled: true });
+        modeler.get('selection').setOptions({ selectable: false });
       } else {
-        // Show controls for edit mode
-        canvas.showLayer('controls');
+        // For edit mode, re-enable interactions
+        modeler.get('palette').show();
+        modeler.get('contextPad').show();
         
         // Re-enable direct editing by re-importing the XML
-        bpmnModelerRef.current.saveXML({ format: true })
+        modeler.get('dragging').setOptions({ disabled: false });
+        modeler.get('selection').setOptions({ selectable: true });
+        
+        // Re-enable direct editing by refreshing the modeler
+        modeler.saveXML({ format: true })
           .then(({ xml }: { xml: string }) => {
-            bpmnModelerRef.current.importXML(xml);
+            modeler.importXML(xml);
           });
       }
     } catch (error) {
@@ -484,4 +487,3 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
 };
 
 export default BpmnModeler;
-
