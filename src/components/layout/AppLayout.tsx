@@ -9,7 +9,7 @@ const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-soft">
+    <div className="flex flex-col min-h-screen bg-gradient-soft dark:bg-gray-900">
       <Navbar />
       
       <div className="flex flex-1">

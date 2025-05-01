@@ -29,13 +29,25 @@ export const UserDropdown: React.FC = () => {
     const shouldEnableDarkMode = storedTheme === 'dark' || (!storedTheme && systemPrefersDark);
     
     setIsDarkMode(shouldEnableDarkMode);
-    document.documentElement.classList.toggle('dark', shouldEnableDarkMode);
+    
+    // Apply dark mode class to document
+    if (shouldEnableDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, []);
 
   const toggleDarkMode = () => {
     const newDarkModeState = !isDarkMode;
     setIsDarkMode(newDarkModeState);
-    document.documentElement.classList.toggle('dark', newDarkModeState);
+    
+    // Apply or remove dark mode class
+    if (newDarkModeState) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     
     // Store preference
     localStorage.setItem('theme', newDarkModeState ? 'dark' : 'light');
@@ -85,7 +97,7 @@ export const UserDropdown: React.FC = () => {
               ) : (
                 <Sun className="h-4 w-4 text-gray-500" />
               )}
-              <Label htmlFor="dark-mode" className="dark:text-gray-300">Dark Mode</Label>
+              <Label htmlFor="dark-mode" className="text-gray-700 dark:text-gray-300">Dark Mode</Label>
             </div>
             <Switch 
               id="dark-mode" 

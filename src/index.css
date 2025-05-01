@@ -204,21 +204,55 @@
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
   .status-badge.active {
-    @apply bg-success/10 text-success dark:bg-success/20 animate-pulse;
+    @apply bg-success/10 text-success dark:bg-success/20 dark:text-green-300 animate-pulse;
   }
   .status-badge.completed {
     @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300;
   }
   .status-badge.pending {
-    @apply bg-warning/10 text-warning dark:bg-warning/20;
+    @apply bg-warning/10 text-warning dark:bg-warning/20 dark:text-yellow-300;
   }
   .status-badge.failed {
-    @apply bg-destructive/10 text-destructive dark:bg-destructive/20;
+    @apply bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-red-300;
   }
 
   /* Table hover effects */
   .table-row-hover {
     @apply transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-gray-800;
+  }
+
+  /* Dark mode background adjustments */
+  .dark .bg-white {
+    @apply bg-gray-900;
+  }
+  
+  .dark .bg-gray-50 {
+    @apply bg-gray-800;
+  }
+  
+  .dark .bg-gray-100 {
+    @apply bg-gray-800;
+  }
+  
+  .dark .border-gray-200 {
+    @apply border-gray-700;
+  }
+  
+  .dark .shadow-sm {
+    @apply shadow-gray-800/50;
+  }
+  
+  .dark .shadow-md {
+    @apply shadow-gray-800/50;
+  }
+  
+  .dark .bg-gradient-soft {
+    background: linear-gradient(135deg, #111827, #1F2937);
+  }
+  
+  /* Process instances cards */
+  .dark .glass {
+    @apply bg-gray-800/80 backdrop-blur-md border border-gray-700/50;
   }
 
   /* BPMN specific styles */
@@ -315,6 +349,16 @@
   background-color: #1F2937 !important;
 }
 
+.dark .djs-palette-entries .entry {
+  color: #E5E7EB !important;
+}
+
+.dark .djs-palette-toggle {
+  background-color: #1F2937 !important;
+  border-color: #374151 !important;
+  color: #E5E7EB !important;
+}
+
 .djs-popup {
   background-color: #FFFFFF !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
@@ -326,60 +370,71 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Style fixes for properties panel in dark mode */
+.dark .djs-popup .entry {
+  color: #E5E7EB !important;
+}
+
+/* Improving dark mode for properties panel */
 .dark .bpp-properties-panel {
-  background-color: #1F2937;
-  color: #f3f4f6;
-  border-color: #4b5563;
+  background-color: #1F2937 !important;
+  border-color: #374151 !important;
+  color: #E5E7EB !important;
+}
+
+.dark .bpp-properties-header {
+  border-bottom-color: #374151 !important;
+  color: #E5E7EB !important;
+}
+
+.dark .bpp-properties-group {
+  border-bottom-color: #374151 !important;
+}
+
+.dark .bpp-properties-entry {
+  color: #E5E7EB !important;
+  border-bottom-color: #374151 !important;
 }
 
 .dark .bpp-properties-panel input,
 .dark .bpp-properties-panel textarea,
 .dark .bpp-properties-panel select {
-  background-color: #374151;
-  color: #f3f4f6;
-  border-color: #4b5563;
+  background-color: #374151 !important;
+  border-color: #4B5563 !important;
+  color: #E5E7EB !important;
 }
 
 .dark .bpp-properties-panel [data-entry] .bpp-field-wrapper {
-  background-color: #374151;
+  background-color: #374151 !important;
 }
 
 .dark .bpp-properties-panel button {
-  background-color: #4b5563;
-  color: #f3f4f6;
-}
-
-.dark .bpp-properties-header {
-  border-bottom-color: #4b5563;
+  background-color: #4B5563 !important;
+  color: #E5E7EB !important;
 }
 
 .dark .bpp-properties-tab-bar {
-  border-bottom-color: #4b5563;
+  border-bottom-color: #374151 !important;
 }
 
 .dark .bpp-properties-tab-bar .bpp-active {
-  border-top-color: #6366F1;
+  border-top-color: #6366F1 !important;
+  color: #E5E7EB !important;
 }
 
-/* Additional styles for BPMN panels in dark mode */
-.dark .bpp-properties {
-  background-color: #1F2937;
-  color: #f3f4f6;
+/* Table styling for dark mode */
+.dark table {
+  @apply bg-gray-900/50 border-gray-700;
 }
 
-.dark .djs-popup .entry:hover {
-  background-color: #374151;
+.dark table th {
+  @apply bg-gray-800 text-gray-200 border-gray-700;
 }
 
-.dark .djs-context-pad .entry:hover {
-  background-color: #374151;
+.dark table tr {
+  @apply border-gray-700;
 }
 
-.dark .bpp-properties-group {
-  border-bottom-color: #4b5563;
+.dark table td {
+  @apply border-gray-700 text-gray-300;
 }
 
-.dark .bpp-properties-entry {
-  border-bottom-color: #4b5563;
-}

@@ -95,8 +95,9 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           }
           
           const canvas = modeler.get('canvas');
-          if (canvas && typeof canvas.zoom === 'function') {
-            canvas.zoom('fit-viewport', 'auto');
+          if (canvas) {
+            // Fix TS error by using type assertion
+            (canvas as any).zoom('fit-viewport', 'auto');
           }
           
           setIsLoaded(true);
@@ -483,15 +484,18 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         </div>
       </div>
       
-      <div className="flex flex-1 overflow-hidden rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+      <div className="flex flex-col flex-1 overflow-hidden rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+        {/* Main diagram container */}
         <div
           ref={containerRef}
           className="flex-1 bg-white bg-gradient-to-br from-gray-50 to-white dark:bg-gray-900 dark:from-gray-900 dark:to-gray-800"
         ></div>
         
+        {/* Properties panel at the bottom */}
         <div
           ref={propertiesPanelRef}
-          className={`w-80 transition-all duration-500 ease-in-out overflow-auto border-l border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 ${isViewOnly ? 'hidden' : ''}`}
+          className={`h-64 transition-all duration-500 ease-in-out overflow-auto border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 ${isViewOnly ? 'hidden' : ''}`}
+          style={{ maxHeight: "30%" }}
         ></div>
       </div>
     </div>
