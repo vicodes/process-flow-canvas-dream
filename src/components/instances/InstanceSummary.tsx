@@ -64,7 +64,7 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
       <div className="card-gradient-border p-5 shadow-sm rounded-lg">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800">
+            <h2 className="text-xs font-semibold text-gray-800">
               Instance Not Found
             </h2>
             <p className="text-gray-600">
@@ -84,13 +84,13 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
     <div className="card-gradient-border p-5 shadow-sm rounded-lg animate-fade-in">
       <div className="flex flex-wrap justify-between items-center">
         <div className="mb-2 sm:mb-0">
-          <h2 className="text-xl font-bold text-gray-800 flex items-center">
+          <h2 className="text-xs font-bold text-gray-800 flex items-center">
             {instance.processId}
             {instance.status === 'RUNNING' && (
               <span className="ml-2 inline-block w-2 h-2 bg-success rounded-full animate-pulse"></span>
             )}
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-xs">
             {instance.processName} - {instance.processVersion}
           </p>
         </div>
@@ -125,7 +125,7 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
                   >
                     Keep Running
                   </Button>
-                  <Button 
+                  <Button
                     variant="destructive" 
                     onClick={handleCancel}
                   >
@@ -139,8 +139,8 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-          <p className="text-sm font-medium text-gray-500">Status</p>
+        <div className="bg-white p-3 rounded shadow-sm border border-gray-100 h-12">
+          <p className="text-xs font-medium text-gray-500">Status</p>
           <div className="mt-1">
             <span className={`status-badge ${instance.status}`}>
               {instance.status === 'RUNNING' && (
@@ -160,23 +160,23 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
           </div>
         </div>
         
-        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-          <p className="text-sm font-medium text-gray-500">Process</p>
-          <p className="mt-1 font-semibold text-gray-800">
+        <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">
+          <p className="text-xs font-medium text-gray-500">Process</p>
+          <p className="text-xs mt-1 font-semibold text-gray-800">
             {instance.processName}
           </p>
         </div>
         
-        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-          <p className="text-sm font-medium text-gray-500">Start Date</p>
-          <p className="mt-1 font-semibold text-gray-800">
+        <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">
+          <p className="text-xs font-medium text-gray-500">Start Date</p>
+          <p className="text-xs mt-1 font-semibold text-gray-800">
             {formatDate(instance.startDate)}
           </p>
         </div>
         
-        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-          <p className="text-sm font-medium text-gray-500">End Date</p>
-          <p className="mt-1 font-semibold text-gray-800">
+        <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">
+          <p className="text-xs font-medium text-gray-500">End Date</p>
+          <p className="text-xs mt-1 font-semibold text-gray-800">
             {formatDate(instance.endDate)}
           </p>
         </div>
