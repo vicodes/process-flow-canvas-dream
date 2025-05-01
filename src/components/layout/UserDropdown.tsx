@@ -57,10 +57,8 @@ export const UserDropdown: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Add logout functionality here
     console.log('User logged out');
     toast.success('You have been logged out');
-    // In a real application, this would clear auth tokens, redirect to login, etc.
   };
 
   return (
@@ -68,7 +66,7 @@ export const UserDropdown: React.FC = () => {
       <DropdownMenuTrigger className="flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
         <Avatar className="h-8 w-8">
           <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback className="bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300">JD</AvatarFallback>
+          <AvatarFallback className="bg-primary-100 text-primary-900 dark:bg-primary-900/20 dark:text-primary-300">JD</AvatarFallback>
         </Avatar>
         <div className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">John Doe</div>
         <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -109,7 +107,7 @@ export const UserDropdown: React.FC = () => {
         
         <DropdownMenuSeparator className="dark:border-gray-700" />
         
-        <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-gray-700" onClick={handleLogout}>
+        <DropdownMenuItem className="cursor-pointer text-primary-900 focus:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200 dark:hover:bg-gray-700" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>

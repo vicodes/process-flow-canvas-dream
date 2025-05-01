@@ -19,7 +19,7 @@ const AppLayout: React.FC = () => {
           "flex-1 transition-all duration-300 ease-in-out pt-4", 
           sidebarCollapsed ? "ml-16" : "ml-64"
         )}>
-          <div className="container px-4 py-2 mx-auto">
+          <div className="container px-4 py-2 mx-auto dark:text-gray-100">
             <Outlet />
           </div>
         </main>
