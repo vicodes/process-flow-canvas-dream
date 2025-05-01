@@ -103,7 +103,7 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
           {instance.status === 'RUNNING' && (
             <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
+                <Button size ="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10 ml-0.5">
                   <XCircle className="w-4 h-4 mr-1" />
                   Cancel Instance
                 </Button>
