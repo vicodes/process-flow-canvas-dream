@@ -13,9 +13,11 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
 
 export const UserDropdown: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { user, logout } = useAuth();
 
   // Check for user preference and system preference on mount
   useEffect(() => {
@@ -56,19 +58,32 @@ export const UserDropdown: React.FC = () => {
     toast.success(`${newDarkModeState ? 'Dark' : 'Light'} mode enabled`);
   };
 
-  const handleLogout = () => {
-    console.log('User logged out');
-    toast.success('You have been logged out');
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
+
+  const displayName = user?.name || user?.username || 'User';
+  const initials = displayName
+    .split(' ')
+    .map(name => name[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+
+  const profilePicture = user?.photoUrl || '';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
         <Avatar className="h-8 w-8">
-          <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback className="bg-primary-100 text-primary-900 dark:bg-primary-900/20 dark:text-primary-300">JD</AvatarFallback>
+          <AvatarImage src={profilePicture || "/placeholder.svg"} />
+          <AvatarFallback className="bg-primary-100 text-primary-900 dark:bg-primary-900/20 dark:text-primary-300">{initials}</AvatarFallback>
         </Avatar>
-        <div className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">John Doe</div>
+        <div className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">{displayName}</div>
         <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
       </DropdownMenuTrigger>
 
@@ -107,7 +122,10 @@ export const UserDropdown: React.FC = () => {
         
         <DropdownMenuSeparator className="dark:border-gray-700" />
         
-        <DropdownMenuItem className="cursor-pointer text-primary-900 focus:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200 dark:hover:bg-gray-700" onClick={handleLogout}>
+        <DropdownMenuItem 
+          className="cursor-pointer text-primary-900 focus:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200 dark:hover:bg-gray-700" 
+          onClick={handleLogout}
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>

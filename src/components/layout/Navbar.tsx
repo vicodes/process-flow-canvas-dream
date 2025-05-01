@@ -3,8 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { UserDropdown } from './UserDropdown';
+import { getEnvironment } from '@/config/environments';
 
 export const Navbar: React.FC = () => {
+  const environment = getEnvironment();
+  
   return (
     <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm h-16 sticky top-0 z-50">
       <div className="container mx-auto h-full px-4 flex items-center justify-between">
@@ -17,6 +20,17 @@ export const Navbar: React.FC = () => {
             </svg>
             <h1 className="text-xl font-bold text-primary-900 dark:text-primary-400">OrchesT</h1>
           </Link>
+          
+          {/* Environment indicator */}
+          {environment.name !== 'Production' && (
+            <span className={cn(
+              "ml-2 px-2 py-1 text-xs font-medium rounded",
+              environment.name === 'Development' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
+              "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+            )}>
+              {environment.name}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center">
