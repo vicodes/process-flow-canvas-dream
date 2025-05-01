@@ -95,16 +95,16 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
           </p>
         </div>
         <div className="flex space-x-0">
-          <Button size ="sm" variant="outline" onClick={handleBack} className="flex space-x-1 items-center">
+          <Button size ="sm" variant="outline" onClick={handleBack} className="flex space-x-1 items-center mr-2">
             <ArrowLeftCircle className="w-1 h-1" />
             <span className="text-xs">Back</span>
           </Button>
           
           {instance.status === 'RUNNING' && (
             <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size ="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10 ml-0.5">
-                  <XCircle className="w-4 h-4 mr-1" />
+              <DialogTrigger asChild className=" ml-3">
+                <Button size ="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
+                  <XCircle className="w-4 h-4" />
                   Cancel Instance
                 </Button>
               </DialogTrigger>
