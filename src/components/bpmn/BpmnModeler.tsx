@@ -471,17 +471,6 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           </Button>
           <div className="flex items-center ml-4 space-x-2">
             <Switch
-              id="preview-mode"
-              checked={isViewOnly}
-              onCheckedChange={setIsViewOnly}
-            />
-            <Label htmlFor="preview-mode" className="flex items-center">
-              <Eye className="w-4 h-4 mr-1" />
-              Preview Mode
-            </Label>
-          </div>
-          <div className="flex items-center ml-4 space-x-2">
-            <Switch
               id="properties-panel"
               checked={showPropertiesPanel}
               onCheckedChange={setShowPropertiesPanel}

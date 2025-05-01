@@ -10,7 +10,7 @@ export const Navbar: React.FC = () => {
   
   return (
     <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm h-16 sticky top-0 z-50">
-      <div className="container mx-auto h-full px-4 flex items-center justify-between">
+      <div className="mx-auto h-full px-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Link to="/" className="flex items-center space-x-2">
             <svg width="24" height="24" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">

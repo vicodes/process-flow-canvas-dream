@@ -12,8 +12,7 @@ export interface ProcessInstance {
   processId: string;
   processName: string;
   processVersion: string;
-  // status: 'STARTED' | 'RUNNING' | 'HOLD' | 'failed';
-  status: string;
+  status: string,
   startDate: string;
   endDate: string | null;
 }

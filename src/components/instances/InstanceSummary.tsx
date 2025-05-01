@@ -140,24 +140,21 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
         <div className="bg-white p-3 rounded shadow-sm border border-gray-100 h-12">
-          <p className="text-xs font-medium text-gray-500">Status</p>
-          <div className="mt-1">
-            <span className={`status-badge ${instance.status}`}>
+          <p className="text-xs font-medium text-gray-500">Status <span className={`status-badge ${instance.status}`}>
               {instance.status === 'RUNNING' && (
-                <span className="mr-1.5 h-2 w-2 rounded-full bg-success inline-block"></span>
+                  <span className="mr-1.5 h-2 w-2 rounded-full bg-success inline-block"></span>
               )}
-              {instance.status === 'COMPLETED' && (
+            {instance.status === 'COMPLETED' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-primary-700 inline-block"></span>
-              )}
-              {instance.status === 'HOLD' && (
+            )}
+            {instance.status === 'HOLD' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-warning inline-block"></span>
-              )}
-              {instance.status === 'INCIDENT' && (
+            )}
+            {instance.status === 'INCIDENT' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-destructive inline-block"></span>
-              )}
-              {instance.status}
-            </span>
-          </div>
+            )}
+            {instance.status}
+            </span></p>
         </div>
         
         <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">

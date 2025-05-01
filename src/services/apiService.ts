@@ -2,11 +2,7 @@
 import { ProcessInstance } from '@/context/AppContext';
 import { getEnvironment } from '../config/environments';
 
-// Mock API service
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const api = {
-  // Processes
   getProcesses: async () => {
     const url = `${getEnvironment().apiUrl}/api/processDefinitions`;
     const response = await fetch(url, {
@@ -99,7 +95,7 @@ export const api = {
       processId: instance.processInstanceId,
       processName: instance.processDefinitionId,
       processVersion: instance.version,
-      status: instance.status,
+      status: instance.state,
       startDate: instance.createdAt,
       endDate: instance.createdAt,
       bpmnXML: instance.bpmnXML,
@@ -108,64 +104,8 @@ export const api = {
     };
   },
   
-  // BPMN diagrams
-  getProcessXml: async (processId: string) => {
-    const url = `${getEnvironment().apiUrl}/api/processDefinition/${processId}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/xml',
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch process XML: ${response.statusText}`);
-    }
-    return response.text();
-  },
-  
-  // Task history for a process instance
-  getInstanceTaskHistory: (instanceId: string) => {
-    const taskCount = Math.floor(Math.random() * 5) + 2; // 2-6 tasks
-    const history = [];
-    
-    const instance = processInstances.find(i => i.id === instanceId);
-    if (!instance) {
-      throw new Error(`Instance ${instanceId} not found`);
-    }
-    
-    const startDate = new Date(instance.startDate);
-    
-    for (let i = 0; i < taskCount; i++) {
-      const taskDate = new Date(startDate);
-      taskDate.setMinutes(taskDate.getMinutes() + (i * 30)); // 30 min between tasks
-      
-      let status: 'completed' | 'active' | 'pending' | 'failed' = 'completed';
-      
-      // If this is the active instance with some progress
-      if (instance.status === 'active' && i === taskCount - 1) {
-        status = 'active';
-      } else if (instance.status === 'failed' && i === taskCount - 1) {
-        status = 'failed';
-      } else if (i >= taskCount - 1 && instance.status === 'pending') {
-        status = 'pending';
-      }
-      
-      history.push({
-        taskId: `task-${i + 1}`,
-        taskName: ['Review Order', 'Process Payment', 'Prepare Package', 'Select Carrier', 'Update Tracking', 'Complete Order'][i % 6],
-        status,
-        timestamp: taskDate.toISOString(),
-        assignee: ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Williams'][Math.floor(Math.random() * 4)]
-      });
-    }
-    
-    return history;
-  },
-  
   // Export to CSV
-  exportToCSV: async (data: any[]): Promise<string> => {
-    await delay(300);
-    
+  exportToCSV: async (data: never[]): Promise<string> => {
     if (!data || data.length === 0) {
       return '';
     }

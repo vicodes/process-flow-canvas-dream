@@ -62,7 +62,7 @@ const ProcessInstanceTable: React.FC<ProcessInstanceTableProps> = ({
             </svg>
           </div>
           <h3 className="text-xl font-medium text-gray-900 mb-2">No Process Instances Found</h3>
-          <p className="text-gray-600 mb-6 max-w-md">
+          <p className="text-gray-600 mb-2 max-w-md">
             No process instances match your current filter criteria. Try adjusting your filters or create a new process instance.
           </p>
           <Button onClick={() => navigate('/modeler')} className="btn-hover-glow">
