@@ -9,6 +9,7 @@ interface AuthContextType {
   user: AccountInfo | null;
   login: () => Promise<void>;
   logout: () => Promise<void>;
+  devLogin: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,6 +46,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const devLogin = async () => {
+    setIsLoading(true);
+    try {
+      // Use the development login from authService
+      await authService.devLogin();
+      const currentUser = authService.getCurrentUser();
+      setUser(currentUser);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = async () => {
     setIsLoading(true);
     try {
@@ -65,6 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         login,
         logout,
+        devLogin,
       }}
     >
       {children}

@@ -3,12 +3,14 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LogIn } from 'lucide-react';
+import { LogIn, User } from 'lucide-react';
+import { getEnvironment } from '@/config/environments';
 
 const Login: React.FC = () => {
-  const { login, isAuthenticated, isLoading } = useAuth();
+  const { login, isAuthenticated, isLoading, devLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const environment = getEnvironment();
   
   const from = location.state?.from?.pathname || '/';
 
@@ -20,7 +22,11 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      await login();
+      if (environment.name === 'Development') {
+        await devLogin();
+      } else {
+        await login();
+      }
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -49,6 +55,12 @@ const Login: React.FC = () => {
           <p className="mt-2 text-gray-600 dark:text-gray-300">
             Sign in to access your dashboard
           </p>
+          
+          {environment.name === 'Development' && (
+            <div className="mt-4 p-2 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded">
+              Development Mode Active - Using Automatic Login
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -56,8 +68,17 @@ const Login: React.FC = () => {
             className="w-full py-6 text-lg"
             onClick={handleLogin}
           >
-            <LogIn className="mr-2 h-5 w-5" />
-            Sign in with Microsoft
+            {environment.name === 'Development' ? (
+              <>
+                <User className="mr-2 h-5 w-5" />
+                Development Login
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 h-5 w-5" />
+                Sign in with Microsoft
+              </>
+            )}
           </Button>
           
           <div className="text-center text-xs text-gray-500 dark:text-gray-400">

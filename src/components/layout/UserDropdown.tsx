@@ -74,7 +74,9 @@ export const UserDropdown: React.FC = () => {
     .toUpperCase()
     .substring(0, 2);
 
-  const profilePicture = user?.photoUrl || '';
+  // Get profile picture from the user object (if available)
+  // Note: Standard AccountInfo doesn't have photoUrl, so we handle it safely
+  const profilePicture = '';
 
   return (
     <DropdownMenu>
