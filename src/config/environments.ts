@@ -20,12 +20,12 @@ const config: EnvironmentConfig = {
   environments: {
     development: {
       name: 'Development',
-      apiUrl: 'https://dev-api.orchestt.example.com',
+      apiUrl: 'http://localhost:8089/orchest-engine',
       auth: {
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID || '',
         authority: `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID || ''}`,
         redirectUri: import.meta.env.VITE_REDIRECT_URI || window.location.origin,
-        scopes: ['User.Read', 'api://your-client-id/access_as_user'],
+        scopes: ["openid", "profile", "User.Read"],
       },
     },
     staging: {
