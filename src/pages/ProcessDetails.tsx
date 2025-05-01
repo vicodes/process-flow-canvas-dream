@@ -40,15 +40,15 @@ const ProcessDetails: React.FC = () => {
   function getHistory(sequenceExecutions: Map<string, never>) {
     const history = []
     const sequenceExecutionsMap = new Map(Object.entries(sequenceExecutions));
-    for (const value of sequenceExecutionsMap.values()) {
+    sequenceExecutionsMap.forEach((value, key) =>{
       history.push({
-        taskId: `${value}`,
+        taskId: `${key}`,
         taskName: `${value.nodeInformation.name}`,
         scopeId: `${value.nodeInformation.scopeId}`,
         status: `${value.state}`,
         // timestamp: value.toISOString(),
       });
-    }
+    });
     return history;
   }
 
@@ -149,19 +149,9 @@ const ProcessDetails: React.FC = () => {
   // Determine active element in diagram
   const getActiveElementId = () => {
     if (!tasks.length) return undefined;
-    
     // Find the active task, or the last one if none is active
-    const activeTask = tasks.find(task => task.status === 'active');
-    const taskNameToElementId: Record<string, string> = {
-      'Review Order': 'Activity_1',
-      'Process Payment': 'Activity_2',
-      'Send Rejection': 'Activity_3',
-      'Prepare Package': 'Activity_1',
-      'Select Carrier': 'Activity_2',
-      'Update Tracking': 'Activity_5',
-    };
-    
-    return activeTask ? taskNameToElementId[activeTask.taskName] : undefined;
+    const activeTask = tasks[tasks.length - 1].taskId;
+    return activeTask ? activeTask : undefined;
   };
   
   return (
@@ -180,7 +170,7 @@ const ProcessDetails: React.FC = () => {
           diagramXml ? (
             <div className="h-[300px]">
               <BpmnViewer xml={diagramXml}
-                          // activeElementId={getActiveElementId()}
+                          activeElementId={getActiveElementId()}
               />
             </div>
           ) : (
