@@ -136,51 +136,49 @@ const ProcessDetails: React.FC = () => {
     <div className="space-y-6">
       <InstanceSummary instance={instance} loading={loading} />
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Process Diagram</h2>
-            
-            {diagramLoading ? (
-              <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <Loader2 className="w-8 h-8 text-primary-500 dark:text-primary-400 animate-spin" />
-              </div>
-            ) : (
-              diagramXml ? (
-                <BpmnViewer xml={diagramXml} activeElementId={getActiveElementId()} />
-              ) : (
-                <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <p className="text-gray-500 dark:text-gray-400">No diagram available</p>
-                </div>
-              )
-            )}
-          </div>
-        </div>
+      {/* Process Diagram - Full width */}
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Process Diagram</h2>
         
-        <div className="lg:col-span-4">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <Tabs defaultValue="variables" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="variables" className="flex items-center">
-                  <Code className="w-4 h-4 mr-2" />
-                  Variables
-                </TabsTrigger>
-                <TabsTrigger value="history" className="flex items-center">
-                  <History className="w-4 h-4 mr-2" />
-                  Task History
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="variables" className="mt-0">
-                <ProcessVariables variables={variables} isLoading={variablesLoading} />
-              </TabsContent>
-              
-              <TabsContent value="history" className="mt-0">
-                <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
-              </TabsContent>
-            </Tabs>
+        {diagramLoading ? (
+          <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <Loader2 className="w-8 h-8 text-primary-500 dark:text-primary-400 animate-spin" />
           </div>
-        </div>
+        ) : (
+          diagramXml ? (
+            <div className="h-[600px]">
+              <BpmnViewer xml={diagramXml} activeElementId={getActiveElementId()} />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <p className="text-gray-500 dark:text-gray-400">No diagram available</p>
+            </div>
+          )
+        )}
+      </div>
+      
+      {/* Variables and Task History - Tabbed interface at bottom */}
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <Tabs defaultValue="variables" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="variables" className="flex items-center">
+              <Code className="w-4 h-4 mr-2" />
+              Process Variables
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center">
+              <History className="w-4 h-4 mr-2" />
+              Task History
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="variables" className="mt-0">
+            <ProcessVariables variables={variables} isLoading={variablesLoading} />
+          </TabsContent>
+          
+          <TabsContent value="history" className="mt-0">
+            <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

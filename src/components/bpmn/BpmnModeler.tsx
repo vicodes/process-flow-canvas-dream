@@ -95,7 +95,9 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           }
           
           const canvas = modeler.get('canvas');
-          canvas.zoom('fit-viewport', 'auto');
+          if (canvas && typeof canvas.zoom === 'function') {
+            canvas.zoom('fit-viewport', 'auto');
+          }
           
           setIsLoaded(true);
         })
@@ -129,8 +131,13 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     try {
       if (isViewOnly) {
         // For view mode, disable interactions
-        modeler.get('palette').hide();
-        modeler.get('contextPad').hide();
+        if (modeler.get('palette')) {
+          modeler.get('palette').hide();
+        }
+        
+        if (modeler.get('contextPad')) {
+          modeler.get('contextPad').hide();
+        }
         
         // Disable direct editing
         const eventBus = modeler.get('eventBus');
@@ -144,8 +151,13 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         modeler.get('selection').setOptions({ selectable: false });
       } else {
         // For edit mode, re-enable interactions
-        modeler.get('palette').show();
-        modeler.get('contextPad').show();
+        if (modeler.get('palette')) {
+          modeler.get('palette').show();
+        }
+        
+        if (modeler.get('contextPad')) {
+          modeler.get('contextPad').show();
+        }
         
         // Re-enable direct editing by re-importing the XML
         modeler.get('dragging').setOptions({ disabled: false });
@@ -410,14 +422,14 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
                 <DialogTitle>Import BPMN Diagram</DialogTitle>
               </DialogHeader>
               <div 
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-500 transition-colors"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-500 transition-colors dark:border-gray-600 dark:hover:border-primary-400"
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
               >
-                <FileUp className="w-12 h-12 mx-auto text-gray-400" />
-                <p className="mt-4 mb-2 text-gray-600">Drag and drop a BPMN file here</p>
-                <p className="text-sm text-gray-500 mb-4">or</p>
+                <FileUp className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500" />
+                <p className="mt-4 mb-2 text-gray-600 dark:text-gray-300">Drag and drop a BPMN file here</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">or</p>
                 <div className="flex justify-center">
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <Button variant="default" onClick={() => fileInputRef.current?.click()}>
@@ -443,7 +455,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             variant="ghost"
             size="icon"
             onClick={handleUndo}
-            className="hover:bg-gray-100"
+            className="hover:bg-gray-100 dark:hover:bg-gray-800"
             title="Undo"
           >
             <Undo className="w-5 h-5" />
@@ -452,7 +464,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             variant="ghost"
             size="icon"
             onClick={handleRedo}
-            className="hover:bg-gray-100"
+            className="hover:bg-gray-100 dark:hover:bg-gray-800"
             title="Redo"
           >
             <Redo className="w-5 h-5" />
@@ -471,15 +483,15 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         </div>
       </div>
       
-      <div className="flex flex-1 overflow-hidden rounded-lg shadow-lg border border-gray-200">
+      <div className="flex flex-1 overflow-hidden rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <div
           ref={containerRef}
-          className="flex-1 bg-white bg-gradient-to-br from-gray-50 to-white"
+          className="flex-1 bg-white bg-gradient-to-br from-gray-50 to-white dark:bg-gray-900 dark:from-gray-900 dark:to-gray-800"
         ></div>
         
         <div
           ref={propertiesPanelRef}
-          className={`w-80 transition-all duration-500 ease-in-out overflow-auto border-l border-gray-200 bg-white ${isViewOnly ? 'hidden' : ''}`}
+          className={`w-80 transition-all duration-500 ease-in-out overflow-auto border-l border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 ${isViewOnly ? 'hidden' : ''}`}
         ></div>
       </div>
     </div>

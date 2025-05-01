@@ -325,3 +325,61 @@
   background-color: #1F2937 !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
+
+/* Style fixes for properties panel in dark mode */
+.dark .bpp-properties-panel {
+  background-color: #1F2937;
+  color: #f3f4f6;
+  border-color: #4b5563;
+}
+
+.dark .bpp-properties-panel input,
+.dark .bpp-properties-panel textarea,
+.dark .bpp-properties-panel select {
+  background-color: #374151;
+  color: #f3f4f6;
+  border-color: #4b5563;
+}
+
+.dark .bpp-properties-panel [data-entry] .bpp-field-wrapper {
+  background-color: #374151;
+}
+
+.dark .bpp-properties-panel button {
+  background-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .bpp-properties-header {
+  border-bottom-color: #4b5563;
+}
+
+.dark .bpp-properties-tab-bar {
+  border-bottom-color: #4b5563;
+}
+
+.dark .bpp-properties-tab-bar .bpp-active {
+  border-top-color: #6366F1;
+}
+
+/* Additional styles for BPMN panels in dark mode */
+.dark .bpp-properties {
+  background-color: #1F2937;
+  color: #f3f4f6;
+}
+
+.dark .djs-popup .entry:hover {
+  background-color: #374151;
+}
+
+.dark .djs-context-pad .entry:hover {
+  background-color: #374151;
+}
+
+.dark .bpp-properties-group {
+  border-bottom-color: #4b5563;
+}
+
+.dark .bpp-properties-entry {
+  border-bottom-color: #4b5563;
+}

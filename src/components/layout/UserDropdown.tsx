@@ -12,34 +12,42 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 export const UserDropdown: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Check for user preference and system preference on mount
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark') ||
-      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    // First check localStorage
+    const storedTheme = localStorage.getItem('theme');
     
-    setIsDarkMode(isDark);
-    document.documentElement.classList.toggle('dark', isDark);
+    // Then check system preference if no stored theme
+    const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Set dark mode based on stored theme or system preference
+    const shouldEnableDarkMode = storedTheme === 'dark' || (!storedTheme && systemPrefersDark);
+    
+    setIsDarkMode(shouldEnableDarkMode);
+    document.documentElement.classList.toggle('dark', shouldEnableDarkMode);
   }, []);
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
+    const newDarkModeState = !isDarkMode;
+    setIsDarkMode(newDarkModeState);
+    document.documentElement.classList.toggle('dark', newDarkModeState);
     
     // Store preference
-    if (!isDarkMode) {
-      localStorage.setItem('theme', 'dark');
-    } else {
-      localStorage.setItem('theme', 'light');
-    }
+    localStorage.setItem('theme', newDarkModeState ? 'dark' : 'light');
+    
+    // Show feedback to user
+    toast.success(`${newDarkModeState ? 'Dark' : 'Light'} mode enabled`);
   };
 
   const handleLogout = () => {
     // Add logout functionality here
     console.log('User logged out');
+    toast.success('You have been logged out');
     // In a real application, this would clear auth tokens, redirect to login, etc.
   };
 
@@ -55,29 +63,29 @@ export const UserDropdown: React.FC = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel className="dark:text-gray-200">My Account</DropdownMenuLabel>
         
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem className="cursor-pointer dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
         
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem className="cursor-pointer dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700">
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>
         
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="dark:border-gray-700" />
         
         <div className="px-2 py-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               {isDarkMode ? (
-                <Moon className="h-4 w-4" />
+                <Moon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
               ) : (
-                <Sun className="h-4 w-4" />
+                <Sun className="h-4 w-4 text-gray-500" />
               )}
-              <Label htmlFor="dark-mode">Dark Mode</Label>
+              <Label htmlFor="dark-mode" className="dark:text-gray-300">Dark Mode</Label>
             </div>
             <Switch 
               id="dark-mode" 
@@ -87,9 +95,9 @@ export const UserDropdown: React.FC = () => {
           </div>
         </div>
         
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="dark:border-gray-700" />
         
-        <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500" onClick={handleLogout}>
+        <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-gray-700" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
