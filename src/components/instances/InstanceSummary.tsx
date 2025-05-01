@@ -81,9 +81,9 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
   }
   
   return (
-    <div className="card-gradient-border p-5 shadow-sm rounded-lg animate-fade-in">
+    <div className="card-gradient-border p-1 shadow-sm rounded-lg animate-fade-in">
       <div className="flex flex-wrap justify-between items-center">
-        <div className="mb-2 sm:mb-0">
+        <div className="mb-0 sm:mb-0">
           <h2 className="text-xs font-bold text-gray-800 flex items-center">
             {instance.processId}
             {instance.status === 'RUNNING' && (
@@ -94,10 +94,10 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
             {instance.processName} - {instance.processVersion}
           </p>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handleBack} className="flex space-x-1 items-center">
-            <ArrowLeftCircle className="w-4 h-4" />
-            <span>Back</span>
+        <div className="flex space-x-0">
+          <Button size ="sm" variant="outline" onClick={handleBack} className="flex space-x-1 items-center">
+            <ArrowLeftCircle className="w-1 h-1" />
+            <span className="text-xs">Back</span>
           </Button>
           
           {instance.status === 'RUNNING' && (
