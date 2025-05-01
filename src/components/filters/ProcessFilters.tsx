@@ -24,13 +24,12 @@ const ProcessFilters: React.FC = () => {
     const fetchProcesses = async () => {
       try {
         const data = await api.getProcesses();
-        
         // Extract unique processes
         const uniqueProcesses = Array.from(
-          new Set(data.map(p => p.name))
+          new Set(data.map(p => p.processDefinitionId))
         ).map(name => {
-          const process = data.find(p => p.name === name);
-          return { id: process!.id, name };
+          const process = data.find(p => p.processDefinitionId === name);
+          return { id: process?.id, name: name};
         });
         
         setProcesses(uniqueProcesses);
@@ -54,10 +53,9 @@ const ProcessFilters: React.FC = () => {
       
       try {
         const data = await api.getProcesses();
-        
         // Filter versions for selected process
         const processVersions = data
-          .filter(p => p.name === filters.process)
+          .filter(p => p.processDefinitionId === filters.process)
           .map(p => p.version);
         
         setVersions(processVersions);

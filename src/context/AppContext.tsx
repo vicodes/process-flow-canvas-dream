@@ -9,11 +9,11 @@ export interface Process {
 }
 
 export interface ProcessInstance {
-  id: string;
   processId: string;
   processName: string;
   processVersion: string;
-  status: 'active' | 'completed' | 'pending' | 'failed';
+  // status: 'STARTED' | 'RUNNING' | 'HOLD' | 'failed';
+  status: string;
   startDate: string;
   endDate: string | null;
 }

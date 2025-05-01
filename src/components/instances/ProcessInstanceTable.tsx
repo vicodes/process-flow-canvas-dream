@@ -128,11 +128,11 @@ const ProcessInstanceTable: React.FC<ProcessInstanceTableProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {currentInstances.map((instance) => (
               <tr 
-                key={instance.id} 
+                key={instance.processId}
                 className="table-row-hover"
               >
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {instance.id}
+                  {instance.processId}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                   {instance.processName}
@@ -142,20 +142,20 @@ const ProcessInstanceTable: React.FC<ProcessInstanceTableProps> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`status-badge ${instance.status}`}>
-                    {instance.status === 'active' && (
-                      <span className="mr-1.5 h-2 w-2 rounded-full bg-success inline-block"></span>
+              {instance.status === 'RUNNING' && (
+                  <span className="mr-1.5 h-2 w-2 rounded-full bg-success inline-block"></span>
+              )}
+                    {instance.status === 'COMPLETED' && (
+                        <span className="mr-1.5 h-2 w-2 rounded-full bg-primary-700 inline-block"></span>
                     )}
-                    {instance.status === 'completed' && (
-                      <span className="mr-1.5 h-2 w-2 rounded-full bg-primary-700 inline-block"></span>
+                    {instance.status === 'HOLD' && (
+                        <span className="mr-1.5 h-2 w-2 rounded-full bg-warning inline-block"></span>
                     )}
-                    {instance.status === 'pending' && (
-                      <span className="mr-1.5 h-2 w-2 rounded-full bg-warning inline-block"></span>
+                    {instance.status === 'INCIDENT' && (
+                        <span className="mr-1.5 h-2 w-2 rounded-full bg-destructive inline-block"></span>
                     )}
-                    {instance.status === 'failed' && (
-                      <span className="mr-1.5 h-2 w-2 rounded-full bg-destructive inline-block"></span>
-                    )}
-                    {instance.status.charAt(0).toUpperCase() + instance.status.slice(1)}
-                  </span>
+                    {instance.status}
+            </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                   {formatDate(instance.startDate)}
@@ -167,7 +167,7 @@ const ProcessInstanceTable: React.FC<ProcessInstanceTableProps> = ({
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleViewInstance(instance.id)}
+                    onClick={() => handleViewInstance(instance.processId)}
                     className="hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 transition-colors"
                   >
                     <Eye className="w-4 h-4 mr-1" /> View

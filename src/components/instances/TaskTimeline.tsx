@@ -2,14 +2,14 @@
 import React from 'react';
 import { format } from 'date-fns';
 
-type TaskStatus = 'active' | 'completed' | 'pending' | 'failed';
+type TaskStatus = 'RUNNING' | 'COMPLETED' | 'HOLD' | 'INCIDENT';
 
 interface Task {
   taskId: string;
   taskName: string;
   status: TaskStatus;
   timestamp: string;
-  assignee: string;
+  // assignee: string;
 }
 
 interface TaskTimelineProps {
@@ -65,11 +65,11 @@ const TaskTimeline: React.FC<TaskTimelineProps> = ({ tasks, isLoading }) => {
               <div className="flex-1 pt-0.5">
                 <h4 className="font-semibold text-gray-900">{task.taskName}</h4>
                 <div className="text-sm text-gray-600 mb-1">
-                  {formatDateTime(task.timestamp)}
+                  {task.timestamp}
                 </div>
                 
                 <div className="flex items-center space-x-3 text-sm">
-                  <span className="text-gray-600">Assignee: <span className="font-medium">{task.assignee}</span></span>
+                  {/*<span className="text-gray-600">Assignee: <span className="font-medium">{task.assignee}</span></span>*/}
                   <span className={`status-badge ${task.status}`}>
                     {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                   </span>

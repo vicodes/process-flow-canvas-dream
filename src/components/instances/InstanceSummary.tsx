@@ -85,8 +85,8 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
       <div className="flex flex-wrap justify-between items-center">
         <div className="mb-2 sm:mb-0">
           <h2 className="text-xl font-bold text-gray-800 flex items-center">
-            {instance.id}
-            {instance.status === 'active' && (
+            {instance.processId}
+            {instance.status === 'RUNNING' && (
               <span className="ml-2 inline-block w-2 h-2 bg-success rounded-full animate-pulse"></span>
             )}
           </h2>
@@ -100,7 +100,7 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
             <span>Back</span>
           </Button>
           
-          {instance.status === 'active' && (
+          {instance.status === 'RUNNING' && (
             <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
@@ -143,19 +143,19 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
           <p className="text-sm font-medium text-gray-500">Status</p>
           <div className="mt-1">
             <span className={`status-badge ${instance.status}`}>
-              {instance.status === 'active' && (
+              {instance.status === 'RUNNING' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-success inline-block"></span>
               )}
-              {instance.status === 'completed' && (
+              {instance.status === 'COMPLETED' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-primary-700 inline-block"></span>
               )}
-              {instance.status === 'pending' && (
+              {instance.status === 'HOLD' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-warning inline-block"></span>
               )}
-              {instance.status === 'failed' && (
+              {instance.status === 'INCIDENT' && (
                 <span className="mr-1.5 h-2 w-2 rounded-full bg-destructive inline-block"></span>
               )}
-              {instance.status.charAt(0).toUpperCase() + instance.status.slice(1)}
+              {instance.status}
             </span>
           </div>
         </div>

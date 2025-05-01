@@ -46,7 +46,7 @@ const ProcessList: React.FC = () => {
     try {
       // Prepare data for export
       const exportData = instances.map(instance => ({
-        ID: instance.id,
+        ID: instance.processId,
         ProcessName: instance.processName,
         Version: instance.processVersion,
         Status: instance.status,
@@ -79,8 +79,8 @@ const ProcessList: React.FC = () => {
   
   // Get summary counts
   const getInstancesCount = () => {
-    const active = instances.filter(i => i.status === 'active').length;
-    const completed = instances.filter(i => i.status === 'completed').length;
+    const active = instances.filter(i => i.status === 'RUNNING').length;
+    const completed = instances.filter(i => i.status === 'COMPLETED').length;
     
     return { total: instances.length, active, completed };
   };
