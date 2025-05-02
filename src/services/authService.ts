@@ -1,12 +1,16 @@
 
 import { PublicClientApplication, AuthenticationResult, AccountInfo } from "@azure/msal-browser";
+import { getEnvironment } from "@/config/environments";
+
+// Get environment configuration
+const environment = getEnvironment();
 
 // MSAL configuration
 const msalConfig = {
   auth: {
-    clientId: process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID || "",
-    authority: process.env.NEXT_PUBLIC_AZURE_AD_AUTHORITY || "",
-    redirectUri: process.env.NEXT_PUBLIC_AZURE_AD_REDIRECT_URI || "/",
+    clientId: environment.auth.clientId,
+    authority: environment.auth.authority,
+    redirectUri: environment.auth.redirectUri,
   },
   cache: {
     cacheLocation: "localStorage",
@@ -19,7 +23,7 @@ const msalInstance = new PublicClientApplication(msalConfig);
 
 // Define login request
 const loginRequest = {
-  scopes: ["profile", "openid", "email"],
+  scopes: environment.auth.scopes,
 };
 
 // AuthService class to manage authentication
@@ -72,7 +76,7 @@ class AuthService {
     }
 
     const silentRequest = {
-      scopes: ["profile", "openid", "email"],
+      scopes: environment.auth.scopes,
       account: account,
     };
 
@@ -89,7 +93,7 @@ class AuthService {
   devLogin(): AuthenticationResult {
     // Mock authentication result for development
     const mockAuthResult: AuthenticationResult = {
-      authority: "https://login.microsoftonline.com/common", // Adding required authority property
+      authority: "https://login.microsoftonline.com/common",
       account: {
         homeAccountId: 'dev-account-id',
         environment: 'development',
