@@ -57,6 +57,20 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
           // Adjust the view box to fit the diagram
           canvas.zoom('fit-viewport', 'auto');
           
+          // Enable dragging by configuring the canvas
+          const eventBus = viewer.get('eventBus');
+          const dragging = viewer.get('dragging');
+          
+          if (dragging && eventBus) {
+            // Allow dragging of the canvas (panning)
+            eventBus.on('element.mousedown', function(e) {
+              // Only enable dragging on the canvas, not on diagram elements
+              if (!e.element.id || e.element.id === '__implicitroot' || e.element.type === 'bpmn:Process') {
+                dragging.init(e, 'hand');
+              }
+            });
+          }
+          
           setIsLoaded(true);
           
           // Highlight active element if provided
@@ -194,7 +208,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
 
   return (
     <div className="bpmn-container relative">
-      <div ref={containerRef} className="bpmn-viewer-container w-full h-[600px]"></div>
+      <div ref={containerRef} className="bpmn-viewer-container w-full h-[600px] cursor-move"></div>
       
       {isLoaded && (
         <div className="bpmn-controls">

@@ -220,43 +220,42 @@
   .table-row-hover {
     @apply transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-gray-800;
   }
+}
 
-  /* Dark mode background adjustments */
-  /* FIX: Replace @apply with direct CSS to avoid circular dependency */
-  .dark .bg-white {
-    background-color: #111827; /* Dark mode background color */
-  }
-  
-  .dark .bg-gray-50 {
-    background-color: #1F2937; /* Dark mode gray-50 color */
-  }
-  
-  .dark .bg-gray-100 {
-    background-color: #1F2937; /* Dark mode gray-100 color */
-  }
-  
-  .dark .border-gray-200 {
-    border-color: #374151; /* Dark mode border color */
-  }
-  
-  .dark .shadow-sm {
-    --tw-shadow-color: rgba(17, 24, 39, 0.5); /* Dark mode shadow */
-  }
-  
-  .dark .shadow-md {
-    --tw-shadow-color: rgba(17, 24, 39, 0.5); /* Dark mode shadow */
-  }
-  
-  .dark .bg-gradient-soft {
-    background: linear-gradient(135deg, #111827, #1F2937);
-  }
-  
-  /* Process instances cards */
-  .dark .glass {
-    background-color: rgba(31, 41, 55, 0.8); /* Dark mode glass background */
-    backdrop-filter: blur(12px);
-    border-color: rgba(55, 65, 81, 0.5); /* Dark mode glass border */
-  }
+/* Dark mode background adjustments - Fix for circular dependency */
+.dark .bg-white {
+  background-color: #111827; /* Dark mode background color */
+}
+
+.dark .bg-gray-50 {
+  background-color: #1F2937; /* Dark mode gray-50 color */
+}
+
+.dark .bg-gray-100 {
+  background-color: #1F2937; /* Dark mode gray-100 color */
+}
+
+.dark .border-gray-200 {
+  border-color: #374151; /* Dark mode border color */
+}
+
+.dark .shadow-sm {
+  --tw-shadow-color: rgba(17, 24, 39, 0.5); /* Dark mode shadow */
+}
+
+.dark .shadow-md {
+  --tw-shadow-color: rgba(17, 24, 39, 0.5); /* Dark mode shadow */
+}
+
+.dark .bg-gradient-soft {
+  background: linear-gradient(135deg, #111827, #1F2937);
+}
+
+/* Process instances cards */
+.dark .glass {
+  background-color: rgba(31, 41, 55, 0.8); /* Dark mode glass background */
+  backdrop-filter: blur(12px);
+  border-color: rgba(55, 65, 81, 0.5); /* Dark mode glass border */
 }
 
 /* BPMN-JS Custom Styling Overrides */

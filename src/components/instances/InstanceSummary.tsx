@@ -64,10 +64,10 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
       <div className="card-gradient-border p-5 shadow-sm rounded-lg">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xs font-semibold text-gray-800">
+            <h2 className="text-xs font-semibold text-gray-800 dark:text-gray-200">
               Instance Not Found
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               The requested process instance could not be found
             </p>
           </div>
@@ -84,26 +84,26 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
     <div className="card-gradient-border p-1 shadow-sm rounded-lg animate-fade-in">
       <div className="flex flex-wrap justify-between items-center">
         <div className="mb-0 sm:mb-0">
-          <h2 className="text-xs font-bold text-gray-800 flex items-center">
+          <h2 className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center">
             {instance.processId}
             {instance.status === 'RUNNING' && (
               <span className="ml-2 inline-block w-2 h-2 bg-success rounded-full animate-pulse"></span>
             )}
           </h2>
-          <p className="text-gray-600 text-xs">
+          <p className="text-gray-600 dark:text-gray-300 text-xs">
             {instance.processName} - {instance.processVersion}
           </p>
         </div>
         <div className="flex space-x-0">
-          <Button size ="sm" variant="outline" onClick={handleBack} className="flex space-x-1 items-center mr-2">
+          <Button size="sm" variant="outline" onClick={handleBack} className="flex space-x-1 items-center mr-2">
             <ArrowLeftCircle className="w-1 h-1" />
             <span className="text-xs">Back</span>
           </Button>
           
           {instance.status === 'RUNNING' && (
             <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-              <DialogTrigger asChild className=" ml-3">
-                <Button size ="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
+              <DialogTrigger asChild className="ml-3">
+                <Button size="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
                   <XCircle className="w-4 h-4" />
                   Cancel Instance
                 </Button>
@@ -115,7 +115,7 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
                     Cancel Process Instance
                   </DialogTitle>
                 </DialogHeader>
-                <DialogDescription>
+                <DialogDescription className="dark:text-gray-300">
                   Are you sure you want to cancel this process instance? This action cannot be undone.
                 </DialogDescription>
                 <DialogFooter className="flex space-x-2 justify-end">
@@ -139,8 +139,8 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        <div className="bg-white p-3 rounded shadow-sm border border-gray-100 h-12">
-          <p className="text-xs font-medium text-gray-500">Status <span className={`status-badge ${instance.status}`}>
+        <div className="bg-white dark:bg-gray-800 p-3 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-12">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Status <span className={`status-badge ${instance.status}`}>
               {instance.status === 'RUNNING' && (
                   <span className="mr-1.5 h-2 w-2 rounded-full bg-success inline-block"></span>
               )}
@@ -157,23 +157,23 @@ const InstanceSummary: React.FC<InstanceSummaryProps> = ({ instance, loading }) 
             </span></p>
         </div>
         
-        <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">
-          <p className="text-xs font-medium text-gray-500">Process</p>
-          <p className="text-xs mt-1 font-semibold text-gray-800">
+        <div className="bg-white dark:bg-gray-800 p-1 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-12">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Process</p>
+          <p className="text-xs mt-1 font-semibold text-gray-800 dark:text-gray-200">
             {instance.processName}
           </p>
         </div>
         
-        <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">
-          <p className="text-xs font-medium text-gray-500">Start Date</p>
-          <p className="text-xs mt-1 font-semibold text-gray-800">
+        <div className="bg-white dark:bg-gray-800 p-1 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-12">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Start Date</p>
+          <p className="text-xs mt-1 font-semibold text-gray-800 dark:text-gray-200">
             {formatDate(instance.startDate)}
           </p>
         </div>
         
-        <div className="bg-white p-1 rounded shadow-sm border border-gray-100 h-12">
-          <p className="text-xs font-medium text-gray-500">End Date</p>
-          <p className="text-xs mt-1 font-semibold text-gray-800">
+        <div className="bg-white dark:bg-gray-800 p-1 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-12">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">End Date</p>
+          <p className="text-xs mt-1 font-semibold text-gray-800 dark:text-gray-200">
             {formatDate(instance.endDate)}
           </p>
         </div>

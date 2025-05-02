@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader2, Code, History } from 'lucide-react';
@@ -10,6 +9,7 @@ import ProcessVariables from '@/components/instances/ProcessVariables';
 import { ProcessInstance } from '@/context/AppContext';
 import api from '@/services/apiService';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const ProcessDetails: React.FC = () => {
   const { processId } = useParams<{ processId: string }>();
@@ -196,11 +196,15 @@ const ProcessDetails: React.FC = () => {
           </TabsList>
           
           <TabsContent value="variables" className="mt-0">
-            <ProcessVariables variables={variables} isLoading={variablesLoading} />
+            <ScrollArea className="h-[300px] w-full">
+              <ProcessVariables variables={variables} isLoading={variablesLoading} />
+            </ScrollArea>
           </TabsContent>
           
           <TabsContent value="history" className="mt-0">
-            <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
+            <ScrollArea className="h-[300px] w-full">
+              <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
+            </ScrollArea>
           </TabsContent>
         </Tabs>
       </div>
