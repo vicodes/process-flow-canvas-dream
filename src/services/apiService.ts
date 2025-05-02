@@ -104,7 +104,7 @@ export const api = {
     };
   },
   
-  // Export to CSV
+  // Export to CSV - Fix the type to ensure it returns a string
   exportToCSV: async <T extends Record<string, any>>(data: T[]): Promise<string> => {
     if (!data || data.length === 0) {
       return '';

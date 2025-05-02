@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ))}
         </nav>
         
-        {/* User dropdown moved to the bottom of sidebar */}
+        {/* User dropdown moved to the bottom of sidebar with improved styling */}
         <div className={cn(
           "mt-auto border-t border-gray-200 dark:border-gray-700 p-4",
           collapsed ? "flex justify-center" : ""

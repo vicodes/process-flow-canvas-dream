@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import DmnViewer from '@/components/dmn/DmnViewer';
 
 // Mock DMN decision data
 const mockDmnData = {
@@ -567,8 +567,8 @@ const DmnDetails: React.FC = () => {
               <CardTitle>DMN Viewer</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[500px]">
-                <DmnXmlViewer xml={dmnData.dmnXml} />
+              <div className="h-[500px] border rounded-md overflow-hidden">
+                <DmnViewer xml={dmnData.dmnXml} />
               </div>
             </CardContent>
           </Card>
