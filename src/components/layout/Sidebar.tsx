@@ -102,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           "mt-auto border-t border-gray-200 dark:border-gray-700 p-4",
           collapsed ? "flex justify-center" : ""
         )}>
-          <UserDropdown />
+          <UserDropdown collapsed={collapsed} />
         </div>
       </div>
     </aside>

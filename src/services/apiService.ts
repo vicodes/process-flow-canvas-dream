@@ -105,7 +105,7 @@ export const api = {
   },
   
   // Export to CSV
-  exportToCSV: async (data: never[]): Promise<string> => {
+  exportToCSV: async <T extends Record<string, any>>(data: T[]): Promise<string> => {
     if (!data || data.length === 0) {
       return '';
     }

@@ -14,13 +14,10 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-import { useSidebar } from '@/components/ui/sidebar';
 
-export const UserDropdown: React.FC = () => {
+export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = false }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { user, logout } = useAuth();
-  const sidebarContext = useSidebar();
-  const collapsed = sidebarContext?.state === 'collapsed' || false;
 
   // Check for user preference and system preference on mount
   useEffect(() => {
@@ -78,7 +75,6 @@ export const UserDropdown: React.FC = () => {
     .substring(0, 2);
 
   // Get profile picture from the user object (if available)
-  // Note: Standard AccountInfo doesn't have photoUrl, so we handle it safely
   const profilePicture = '';
 
   return (

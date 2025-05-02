@@ -54,7 +54,7 @@ const ProcessList: React.FC = () => {
         EndDate: instance.endDate || ''
       }));
       
-      // Generate CSV
+      // Generate CSV with proper type
       const csvContent = await api.exportToCSV(exportData);
       
       // Create download
