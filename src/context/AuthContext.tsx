@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AccountInfo } from '@azure/msal-browser';
 import { authService } from '@/services/authService';
@@ -50,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       // Use the development login from authService
-      await authService.devLogin();
+      authService.devLogin();
       const currentUser = authService.getCurrentUser();
       setUser(currentUser);
     } finally {
