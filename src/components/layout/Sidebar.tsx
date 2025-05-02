@@ -11,6 +11,7 @@ import {
   Database
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { UserDropdown } from './UserDropdown';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -95,7 +96,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </Link>
           ))}
         </nav>
+        
+        {/* User dropdown moved to the bottom of sidebar */}
+        <div className={cn(
+          "mt-auto border-t border-gray-200 dark:border-gray-700 p-4",
+          collapsed ? "flex justify-center" : ""
+        )}>
+          <UserDropdown />
+        </div>
       </div>
     </aside>
   );
 };
+
+export default Sidebar;

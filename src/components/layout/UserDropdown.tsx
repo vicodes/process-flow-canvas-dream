@@ -14,10 +14,13 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
+import { useSidebar } from '@/components/ui/sidebar';
 
 export const UserDropdown: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { user, logout } = useAuth();
+  const sidebarContext = useSidebar();
+  const collapsed = sidebarContext?.state === 'collapsed' || false;
 
   // Check for user preference and system preference on mount
   useEffect(() => {
@@ -80,16 +83,23 @@ export const UserDropdown: React.FC = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
+      <DropdownMenuTrigger className={cn(
+        "flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none w-full",
+        collapsed ? "justify-center" : "justify-between"
+      )}>
         <Avatar className="h-8 w-8">
           <AvatarImage src={profilePicture || "/placeholder.svg"} />
           <AvatarFallback className="bg-primary-100 text-primary-900 dark:bg-primary-900/20 dark:text-primary-300">{initials}</AvatarFallback>
         </Avatar>
-        <div className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">{displayName}</div>
-        <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+        {!collapsed && (
+          <>
+            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{displayName}</div>
+            <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+          </>
+        )}
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" side="top" className="w-56">
         <DropdownMenuLabel className="dark:text-gray-200">My Account</DropdownMenuLabel>
         
         <DropdownMenuItem className="cursor-pointer dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700">
@@ -135,3 +145,9 @@ export const UserDropdown: React.FC = () => {
     </DropdownMenu>
   );
 };
+
+function cn(...classes: any[]): string {
+  return classes.filter(Boolean).join(' ');
+}
+
+export default UserDropdown;
