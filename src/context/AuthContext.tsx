@@ -1,6 +1,8 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AccountInfo } from '@azure/msal-browser';
 import { authService } from '@/services/authService';
+import { getEnvironment } from '@/config/environments';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -16,6 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AccountInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const environment = getEnvironment();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -40,6 +43,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await authService.login();
       const currentUser = authService.getCurrentUser();
       setUser(currentUser);
+    } catch (error) {
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -49,9 +54,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       // Use the development login from authService
-      authService.devLogin();
-      const currentUser = authService.getCurrentUser();
-      setUser(currentUser);
+      const result = authService.devLogin();
+      setUser(result.account);
+    } catch (error) {
+      console.error('Development login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -62,10 +68,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await authService.logout();
       setUser(null);
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // In development mode, check for an existing login
+  useEffect(() => {
+    if (environment.name === 'Development' && authService.isLoggedIn()) {
+      const devUser = authService.getCurrentUser();
+      if (devUser) {
+        setUser(devUser);
+      }
+    }
+  }, []);
 
   const isAuthenticated = !!user;
 

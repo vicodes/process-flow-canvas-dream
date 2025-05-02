@@ -1,4 +1,3 @@
-
 import { PublicClientApplication, AuthenticationResult, AccountInfo } from "@azure/msal-browser";
 import { getEnvironment } from "@/config/environments";
 
@@ -53,6 +52,12 @@ class AuthService {
   // Handle logout
   async logout(): Promise<void> {
     try {
+      // For development environment, just clear the local storage
+      if (environment.name === 'Development') {
+        localStorage.removeItem('msal.dev.user');
+        return;
+      }
+      
       await msalInstance.logoutPopup({
         postLogoutRedirectUri: "/",
         mainWindowRedirectUri: "/",
@@ -64,12 +69,31 @@ class AuthService {
 
   // Get current user
   getCurrentUser(): AccountInfo | null {
+    // For development environment, check local storage first
+    if (environment.name === 'Development') {
+      const devUser = localStorage.getItem('msal.dev.user');
+      if (devUser) {
+        const parsed = JSON.parse(devUser);
+        return parsed.account;
+      }
+    }
+    
+    // Otherwise use MSAL
     const accounts = msalInstance.getAllAccounts();
     return accounts.length > 0 ? accounts[0] : null;
   }
 
   // Acquire token silently
   async acquireTokenSilent(): Promise<AuthenticationResult | null> {
+    // For development environment, return the stored mock auth result
+    if (environment.name === 'Development') {
+      const devUser = localStorage.getItem('msal.dev.user');
+      if (devUser) {
+        return JSON.parse(devUser);
+      }
+      return null;
+    }
+    
     const account = this.getCurrentUser();
     if (!account) {
       return null;
@@ -137,18 +161,27 @@ class AuthService {
 
   // Check if the user is logged in (for development mode)
   isLoggedIn(): boolean {
-    const authResult = localStorage.getItem('msal.dev.user');
-    return !!authResult;
+    if (environment.name === 'Development') {
+      const authResult = localStorage.getItem('msal.dev.user');
+      return !!authResult;
+    }
+    
+    return msalInstance.getAllAccounts().length > 0;
   }
 
   // Get the user's name from local storage (for development mode)
   getUserName(): string {
-    const authResult = localStorage.getItem('msal.dev.user');
-    if (authResult) {
-      const authResultParsed = JSON.parse(authResult);
-      return authResultParsed.account.name || 'Developer User';
+    if (environment.name === 'Development') {
+      const authResult = localStorage.getItem('msal.dev.user');
+      if (authResult) {
+        const authResultParsed = JSON.parse(authResult);
+        return authResultParsed.account.name || 'Developer User';
+      }
+      return 'Developer User';
     }
-    return 'Developer User';
+    
+    const accounts = msalInstance.getAllAccounts();
+    return accounts.length > 0 ? accounts[0].name || 'User' : 'User';
   }
 }
 

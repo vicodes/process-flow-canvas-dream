@@ -11,6 +11,8 @@ import ProcessList from "./pages/ProcessList";
 import ProcessDetails from "./pages/ProcessDetails";
 import ProcessModeler from "./pages/ProcessModeler";
 import BpmnGenerator from "./pages/BpmnGenerator";
+import DmnList from "./pages/DmnList";
+import DmnDetails from "./pages/DmnDetails";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -41,6 +43,8 @@ const App = () => (
                 <Route path="/" element={<AppLayout />}>
                   <Route index element={<ProcessList />} />
                   <Route path="processes/:processId" element={<ProcessDetails />} />
+                  <Route path="dmns" element={<DmnList />} />
+                  <Route path="dmns/:dmnId" element={<DmnDetails />} />
                   <Route path="modeler" element={<ProcessModeler />} />
                   <Route path="generator" element={<BpmnGenerator />} />
                   <Route path="*" element={<NotFound />} />
