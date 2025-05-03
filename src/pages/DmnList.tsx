@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ValidatedSelectItem } from "@/components/ui/select-helper";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
 
@@ -58,10 +59,10 @@ const DmnList: React.FC = () => {
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
-                <SelectItem value="Failed">Failed</SelectItem>
+                <ValidatedSelectItem value="all">All Statuses</ValidatedSelectItem>
+                <ValidatedSelectItem value="Active">Active</ValidatedSelectItem>
+                <ValidatedSelectItem value="Completed">Completed</ValidatedSelectItem>
+                <ValidatedSelectItem value="Failed">Failed</ValidatedSelectItem>
               </SelectContent>
             </Select>
             <Button variant="default">New DMN</Button>
