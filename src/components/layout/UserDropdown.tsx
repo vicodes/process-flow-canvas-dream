@@ -74,8 +74,8 @@ export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = fa
     .toUpperCase()
     .substring(0, 2);
 
-  // Get profile picture from the user object (if available)
-  const profilePicture = '';
+  // Using a profile picture - for demonstration, we're using a placeholder image
+  const profilePicture = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=256&h=256&q=80';
 
   return (
     <DropdownMenu>
@@ -83,8 +83,8 @@ export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = fa
         "flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none w-full",
         collapsed ? "justify-center" : "justify-between"
       )}>
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={profilePicture || "/placeholder.svg"} />
+        <Avatar className="h-8 w-8 border border-gray-200">
+          <AvatarImage src={profilePicture} alt={displayName} />
           <AvatarFallback className="bg-primary-100 text-primary-900 dark:bg-primary-900/20 dark:text-primary-300">{initials}</AvatarFallback>
         </Avatar>
         {!collapsed && (

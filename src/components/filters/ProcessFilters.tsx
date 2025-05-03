@@ -14,6 +14,7 @@ import {
 import { ValidatedSelectItem } from "@/components/ui/select-helper";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { Download } from "lucide-react";
+import { DateRange } from "react-day-picker";
 
 export type ProcessFiltersProps = {
   onFilterChange: (filters: ProcessFilters) => void;
@@ -23,10 +24,7 @@ export type ProcessFiltersProps = {
 export type ProcessFilters = {
   search: string;
   status: string;
-  dateRange: {
-    from: Date | undefined;
-    to: Date | undefined;
-  };
+  dateRange: DateRange | undefined;
 };
 
 export const ProcessFilters: React.FC<ProcessFiltersProps> = ({
@@ -35,10 +33,7 @@ export const ProcessFilters: React.FC<ProcessFiltersProps> = ({
 }) => {
   const [search, setSearch] = React.useState("");
   const [status, setStatus] = React.useState("");
-  const [dateRange, setDateRange] = React.useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });

@@ -4,23 +4,31 @@ import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { useApp } from '@/context/AppContext';
 import ProcessFilters, { ProcessFilters as FiltersType } from '@/components/filters/ProcessFilters';
+import ProcessVersionFilters from '@/components/filters/ProcessVersionFilters';
 import ProcessInstanceTable from '@/components/instances/ProcessInstanceTable';
 import { Button } from '@/components/ui/button';
 import { ProcessInstance } from '@/context/AppContext';
 import api from '@/services/apiService';
+import { DateRange } from 'react-day-picker';
 
 const ProcessList: React.FC = () => {
-  const { filters } = useApp();
+  const { filters, setFilters } = useApp();
   const [instances, setInstances] = useState<ProcessInstance[]>([]);
   const [loading, setLoading] = useState(true);
   const [localFilters, setLocalFilters] = useState<FiltersType>({
     search: "",
     status: "",
-    dateRange: {
-      from: undefined,
-      to: undefined
-    }
+    dateRange: undefined
   });
+  
+  // Handle process and version filter changes
+  const handleVersionFiltersChange = (versionFilters: { process: string; version: string }) => {
+    setFilters({
+      ...filters,
+      process: versionFilters.process,
+      version: versionFilters.version
+    });
+  };
   
   // Fetch process instances
   useEffect(() => {
@@ -37,7 +45,39 @@ const ProcessList: React.FC = () => {
           searchText: filters.searchText,
         });
         
-        setInstances(data);
+        let filteredData = [...data];
+        
+        // Apply additional filters (from ProcessFilters component)
+        if (localFilters.search) {
+          filteredData = filteredData.filter(instance => 
+            instance.processName.toLowerCase().includes(localFilters.search.toLowerCase()) ||
+            instance.processId.toLowerCase().includes(localFilters.search.toLowerCase())
+          );
+        }
+        
+        if (localFilters.status && localFilters.status !== 'all') {
+          filteredData = filteredData.filter(instance => 
+            instance.status.toLowerCase() === localFilters.status.toLowerCase()
+          );
+        }
+        
+        if (localFilters.dateRange && localFilters.dateRange.from) {
+          const fromDate = new Date(localFilters.dateRange.from);
+          filteredData = filteredData.filter(instance => {
+            const instanceDate = new Date(instance.startDate);
+            return instanceDate >= fromDate;
+          });
+          
+          if (localFilters.dateRange.to) {
+            const toDate = new Date(localFilters.dateRange.to);
+            filteredData = filteredData.filter(instance => {
+              const instanceDate = new Date(instance.startDate);
+              return instanceDate <= toDate;
+            });
+          }
+        }
+        
+        setInstances(filteredData);
       } catch (error) {
         console.error('Error fetching process instances:', error);
         toast.error('Failed to load process instances');
@@ -47,12 +87,11 @@ const ProcessList: React.FC = () => {
     };
     
     fetchInstances();
-  }, [filters]);
+  }, [filters, localFilters]);
   
   // Handle filter changes
   const handleFilterChange = (newFilters: FiltersType) => {
     setLocalFilters(newFilters);
-    // Additional filtering logic here if needed
   };
   
   // Export instances to CSV
@@ -117,7 +156,7 @@ const ProcessList: React.FC = () => {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="glass p-4 rounded-lg animate-fade-in">
           <div className="text-primary-700 text-2xl font-bold">{counts.total}</div>
           <div className="text-gray-500">Total Instances</div>
@@ -134,6 +173,10 @@ const ProcessList: React.FC = () => {
         </div>
       </div>
       
+      {/* Process and Version filters */}
+      <ProcessVersionFilters onFiltersChange={handleVersionFiltersChange} />
+      
+      {/* Additional filters */}
       <ProcessFilters 
         onFilterChange={handleFilterChange} 
         onExport={handleExportCSV} 
