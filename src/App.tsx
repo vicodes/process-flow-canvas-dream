@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +7,6 @@ import { AppProvider } from "./context/AppContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./hooks/use-toast";
 import AppLayout from "./components/layout/AppLayout";
-import Index from "./pages/Index";
 import ProcessList from "./pages/ProcessList";
 import ProcessDetails from "./pages/ProcessDetails";
 import ProcessModeler from "./pages/ProcessModeler";
@@ -44,8 +42,7 @@ const App = () => (
                 {/* Protected Routes */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<AppLayout />}>
-                    <Route index element={<Index />} />
-                    <Route path="processes" element={<ProcessList />} />
+                    <Route index element={<ProcessList />} />
                     <Route path="processes/:processId" element={<ProcessDetails />} />
                     <Route path="dmns" element={<DmnList />} />
                     <Route path="dmns/:dmnId" element={<DmnDetails />} />
