@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ const Index = () => {
             </p>
             <div className="flex justify-end">
               <Button asChild>
-                <Link to="/processes/inst-001">View Processes</Link>
+                <Link to="/processes">View Processes</Link>
               </Button>
             </div>
           </CardContent>
