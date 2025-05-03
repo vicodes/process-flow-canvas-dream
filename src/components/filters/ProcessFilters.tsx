@@ -1,167 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import { Search, X } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useApp } from '@/context/AppContext';
-import api from '@/services/apiService';
+} from "@/components/ui/select";
+import { DatePickerWithRange } from "@/components/ui/date-range-picker";
+import { Download } from "lucide-react";
 
-interface ProcessDefinition {
-  id: string;
-  name: string;
-  version: string;
-}
+export type ProcessFiltersProps = {
+  onFilterChange: (filters: ProcessFilters) => void;
+  onExport: () => void;
+};
 
-const ProcessFilters: React.FC = () => {
-  const { filters, setFilters } = useApp();
-  const [processes, setProcesses] = useState<ProcessDefinition[]>([]);
-  const [versions, setVersions] = useState<string[]>([]);
-  const [searchText, setSearchText] = useState(filters.searchText || '');
-  
-  // Fetch process definitions
-  useEffect(() => {
-    const fetchProcesses = async () => {
-      try {
-        const data = await api.getProcesses();
-        setProcesses(data);
-        
-        // Extract unique versions
-        const uniqueVersions = Array.from(
-          new Set(data.map((process: ProcessDefinition) => process.version))
-        );
-        setVersions(uniqueVersions);
-      } catch (error) {
-        console.error('Error fetching process definitions:', error);
-      }
-    };
-    
-    fetchProcesses();
-  }, []);
-  
-  // Handle process selection
-  const handleProcessChange = (value: string) => {
-    setFilters({
-      ...filters,
-      process: value,
-    });
+export type ProcessFilters = {
+  search: string;
+  status: string;
+  dateRange: {
+    from: Date | undefined;
+    to: Date | undefined;
   };
-  
-  // Handle version selection
-  const handleVersionChange = (value: string) => {
-    setFilters({
-      ...filters,
-      version: value,
-    });
+};
+
+export const ProcessFilters: React.FC<ProcessFiltersProps> = ({
+  onFilterChange,
+  onExport,
+}) => {
+  const [search, setSearch] = React.useState("");
+  const [status, setStatus] = React.useState("");
+  const [dateRange, setDateRange] = React.useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
+
+  // Apply filters when any filter value changes
+  React.useEffect(() => {
+    onFilterChange({ search, status, dateRange });
+  }, [search, status, dateRange, onFilterChange]);
+
+  const exportToCSV = () => {
+    onExport();
   };
-  
-  // Handle search input
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-  
-  // Apply search filter
-  const handleSearch = () => {
-    setFilters({
-      ...filters,
-      searchText,
-    });
-  };
-  
-  // Clear all filters
-  const handleClearFilters = () => {
-    setFilters({
-      process: '',
-      version: '',
-      searchText: '',
-    });
-    setSearchText('');
-  };
-  
-  // Handle Enter key in search input
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
-  
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 dark:bg-gray-800 dark:border-gray-700">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <Label htmlFor="process-filter" className="text-sm font-medium mb-1 block dark:text-gray-300">
-            Process
-          </Label>
-          <Select value={filters.process} onValueChange={handleProcessChange}>
-            <SelectTrigger id="process-filter" className="w-full">
-              <SelectValue placeholder="All Processes" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Processes</SelectItem>
-              {processes.map((process) => (
-                <SelectItem key={process.id} value={process.name}>
-                  {process.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div>
-          <Label htmlFor="version-filter" className="text-sm font-medium mb-1 block dark:text-gray-300">
-            Version
-          </Label>
-          <Select value={filters.version} onValueChange={handleVersionChange}>
-            <SelectTrigger id="version-filter" className="w-full">
-              <SelectValue placeholder="All Versions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Versions</SelectItem>
-              {versions.map((version) => (
-                <SelectItem key={version} value={version}>
-                  {version}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="md:col-span-2">
-          <Label htmlFor="search-filter" className="text-sm font-medium mb-1 block dark:text-gray-300">
-            Search
-          </Label>
-          <div className="flex space-x-2">
-            <div className="relative flex-grow">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <Input
-                id="search-filter"
-                type="text"
-                placeholder="Search by process name..."
-                className="pl-9"
-                value={searchText}
-                onChange={handleSearchChange}
-                onKeyDown={handleKeyDown}
-              />
-            </div>
-            
-            <Button onClick={handleSearch} variant="default">
-              Search
-            </Button>
-            
-            {(filters.process || filters.version || filters.searchText) && (
-              <Button onClick={handleClearFilters} variant="outline" size="icon">
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
+    <div className="flex flex-col gap-4 md:flex-row md:items-end">
+      <div className="flex-1">
+        <Input
+          placeholder="Search processes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full"
+        />
       </div>
+      <div className="w-full md:w-[180px]">
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger>
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Status</SelectLabel>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="suspended">Suspended</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="w-full md:w-auto">
+        <DatePickerWithRange
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+        />
+      </div>
+      <Button variant="outline" size="icon" onClick={exportToCSV}>
+        <Download className="h-4 w-4" />
+      </Button>
     </div>
   );
 };
