@@ -29,7 +29,7 @@ const Index = () => {
             </p>
             <div className="flex justify-end">
               <Button asChild>
-                <Link to="/processes/inst-001">View Processes</Link>
+                <Link to="/processes">View Processes</Link>
               </Button>
             </div>
           </CardContent>
