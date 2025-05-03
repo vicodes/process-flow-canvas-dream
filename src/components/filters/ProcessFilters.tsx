@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ValidatedSelectItem } from "@/components/ui/select-helper";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { Download } from "lucide-react";
 
@@ -69,11 +70,11 @@ export const ProcessFilters: React.FC<ProcessFiltersProps> = ({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Status</SelectLabel>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="suspended">Suspended</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
+              <ValidatedSelectItem value="all">All</ValidatedSelectItem>
+              <ValidatedSelectItem value="active">Active</ValidatedSelectItem>
+              <ValidatedSelectItem value="completed">Completed</ValidatedSelectItem>
+              <ValidatedSelectItem value="suspended">Suspended</ValidatedSelectItem>
+              <ValidatedSelectItem value="failed">Failed</ValidatedSelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

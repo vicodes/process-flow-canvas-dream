@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { useApp } from '@/context/AppContext';
-import ProcessFilters from '@/components/filters/ProcessFilters';
+import ProcessFilters, { ProcessFilters as FiltersType } from '@/components/filters/ProcessFilters';
 import ProcessInstanceTable from '@/components/instances/ProcessInstanceTable';
 import { Button } from '@/components/ui/button';
 import { ProcessInstance } from '@/context/AppContext';
@@ -13,6 +13,14 @@ const ProcessList: React.FC = () => {
   const { filters } = useApp();
   const [instances, setInstances] = useState<ProcessInstance[]>([]);
   const [loading, setLoading] = useState(true);
+  const [localFilters, setLocalFilters] = useState<FiltersType>({
+    search: "",
+    status: "",
+    dateRange: {
+      from: undefined,
+      to: undefined
+    }
+  });
   
   // Fetch process instances
   useEffect(() => {
@@ -40,6 +48,12 @@ const ProcessList: React.FC = () => {
     
     fetchInstances();
   }, [filters]);
+  
+  // Handle filter changes
+  const handleFilterChange = (newFilters: FiltersType) => {
+    setLocalFilters(newFilters);
+    // Additional filtering logic here if needed
+  };
   
   // Export instances to CSV
   const handleExportCSV = async () => {
@@ -120,7 +134,10 @@ const ProcessList: React.FC = () => {
         </div>
       </div>
       
-      <ProcessFilters />
+      <ProcessFilters 
+        onFilterChange={handleFilterChange} 
+        onExport={handleExportCSV} 
+      />
       
       <ProcessInstanceTable instances={instances} loading={loading} />
     </div>
