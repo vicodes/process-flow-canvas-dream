@@ -59,7 +59,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
           // Adjust the view box to fit the diagram
           canvas.zoom('fit-viewport', 'auto');
           
-          // Enable dragging by configuring the canvas
+          // Get eventBus and dragging modules once
           const eventBus = viewer.get('eventBus');
           const dragging = viewer.get('dragging');
           
@@ -73,50 +73,51 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
             });
           }
           
-          // Add click handler for DMN tasks
-          const eventBus = viewer.get('eventBus');
-          eventBus.on('element.click', (event) => {
-            const element = event.element;
-            
-            // Check if the clicked element is a DMN task
-            if (element.type === 'bpmn:BusinessRuleTask' || 
-                (element.businessObject && element.businessObject.implementation === 'dmn')) {
-              console.log('DMN task clicked:', element);
+          // Add click handler for DMN tasks using the already defined eventBus
+          if (eventBus) {
+            eventBus.on('element.click', (event) => {
+              const element = event.element;
               
-              // Extract DMN ID from the element if available
-              let dmnId = null;
-              
-              // Try to get DMN ID from businessObject properties
-              if (element.businessObject) {
-                // Check different possible properties where DMN ID might be stored
-                dmnId = element.businessObject.decisionRef 
-                      || element.businessObject.dmnId 
-                      || element.businessObject.dmnTaskId;
-                      
-                // If no direct DMN ID, try to extract from other attributes
-                if (!dmnId && element.businessObject.extensionElements) {
-                  // Process extension elements if they exist
-                  const extensions = element.businessObject.extensionElements.values;
-                  for (const ext of extensions) {
-                    if (ext.dmnId || ext.decisionRef || ext.decisionRefId) {
-                      dmnId = ext.dmnId || ext.decisionRef || ext.decisionRefId;
-                      break;
+              // Check if the clicked element is a DMN task
+              if (element.type === 'bpmn:BusinessRuleTask' || 
+                  (element.businessObject && element.businessObject.implementation === 'dmn')) {
+                console.log('DMN task clicked:', element);
+                
+                // Extract DMN ID from the element if available
+                let dmnId = null;
+                
+                // Try to get DMN ID from businessObject properties
+                if (element.businessObject) {
+                  // Check different possible properties where DMN ID might be stored
+                  dmnId = element.businessObject.decisionRef 
+                        || element.businessObject.dmnId 
+                        || element.businessObject.dmnTaskId;
+                        
+                  // If no direct DMN ID, try to extract from other attributes
+                  if (!dmnId && element.businessObject.extensionElements) {
+                    // Process extension elements if they exist
+                    const extensions = element.businessObject.extensionElements.values;
+                    for (const ext of extensions) {
+                      if (ext.dmnId || ext.decisionRef || ext.decisionRefId) {
+                        dmnId = ext.dmnId || ext.decisionRef || ext.decisionRefId;
+                        break;
+                      }
                     }
                   }
                 }
+                
+                // If still no DMN ID, use element ID as fallback
+                if (!dmnId) {
+                  dmnId = 'dmn-1'; // Default DMN ID if none is found
+                  console.log('No DMN ID found in element, using default:', dmnId);
+                }
+                
+                // Navigate to DMN details page
+                toast.info(`Navigating to DMN: ${dmnId}`);
+                navigate(`/dmns/${dmnId}`);
               }
-              
-              // If still no DMN ID, use element ID as fallback
-              if (!dmnId) {
-                dmnId = 'dmn-1'; // Default DMN ID if none is found
-                console.log('No DMN ID found in element, using default:', dmnId);
-              }
-              
-              // Navigate to DMN details page
-              toast.info(`Navigating to DMN: ${dmnId}`);
-              navigate(`/dmns/${dmnId}`);
-            }
-          });
+            });
+          }
           
           setIsLoaded(true);
           
