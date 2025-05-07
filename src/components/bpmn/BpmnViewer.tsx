@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import BpmnJS from 'bpmn-js';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-import { ZoomIn, ZoomOut, Move, Download } from 'lucide-react';
+import { ZoomIn, ZoomOut, Move, Download, Hand } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const bpmnViewerRef = useRef<BpmnJS | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isHandTool, setIsHandTool] = useState(false);
   const navigate = useNavigate();
 
   const initBpmnViewer = useCallback(() => {
@@ -67,7 +68,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
             // Only enable dragging on the canvas, not on diagram elements
             eventBus.on('element.mousedown', function(e) {
               // Only enable dragging on the canvas, not on diagram elements
-              if (!e.element.id || e.element.id === '__implicitroot' || e.element.type === 'bpmn:Process') {
+              if (isHandTool || !e.element.id || e.element.id === '__implicitroot' || e.element.type === 'bpmn:Process') {
                 dragging.init(e, 'hand');
               }
             });
@@ -76,6 +77,11 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
           // Add click handler for DMN tasks using the already defined eventBus
           if (eventBus) {
             eventBus.on('element.click', (event) => {
+              // Don't navigate when hand tool is active
+              if (isHandTool) {
+                return;
+              }
+              
               const element = event.element;
               
               // Check if the clicked element is a DMN task
@@ -131,7 +137,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
           toast.error('Failed to load BPMN diagram');
         });
     }
-  }, [xml, activeElementId, navigate]);
+  }, [xml, activeElementId, navigate, isHandTool]);
 
   useEffect(() => {
     initBpmnViewer();
@@ -189,6 +195,15 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
     }
   };
 
+  const toggleHandTool = () => {
+    setIsHandTool(!isHandTool);
+    
+    // Update the viewer's container cursor based on hand tool state
+    if (containerRef.current) {
+      containerRef.current.style.cursor = !isHandTool ? 'grab' : 'default';
+    }
+  };
+  
   const handleExport = (format: 'svg' | 'png') => {
     if (!bpmnViewerRef.current) return;
     
@@ -256,10 +271,13 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
 
   return (
     <div className="bpmn-container relative">
-      <div ref={containerRef} className="bpmn-viewer-container w-full h-[600px] cursor-move"></div>
+      <div 
+        ref={containerRef} 
+        className={`bpmn-viewer-container w-full h-[600px] ${isHandTool ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}`}
+      ></div>
       
       {isLoaded && (
-        <div className="bpmn-controls">
+        <div className="bpmn-controls absolute top-2 right-2 flex flex-col gap-1 bg-white dark:bg-gray-800 p-1 rounded-md shadow-md">
           <Button 
             variant="ghost" 
             size="icon" 
@@ -286,6 +304,16 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
             onClick={handleZoomReset} 
             className="bpmn-control-btn" 
             aria-label="Reset zoom"
+          >
+            <Move className="w-5 h-5" />
+          </Button>
+          
+          <Button 
+            variant={isHandTool ? "secondary" : "ghost"}
+            size="icon" 
+            onClick={toggleHandTool} 
+            className="bpmn-control-btn" 
+            aria-label="Hand tool"
           >
             <Move className="w-5 h-5" />
           </Button>

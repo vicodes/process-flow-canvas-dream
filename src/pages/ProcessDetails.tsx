@@ -76,76 +76,6 @@ const ProcessDetails: React.FC = () => {
     fetchInstance();
   }, [processId]);
   
-  // Fetch BPMN diagram
-  // useEffect(() => {
-  //   const fetchDiagram = async () => {
-  //     if (!instance) return;
-  //
-  //     setDiagramLoading(true);
-  //
-  //     try {
-  //       const xml = await api.getProcessXml(instance.processId);
-  //       setDiagramXml(xml);
-  //     } catch (error) {
-  //       console.error('Error fetching BPMN diagram:', error);
-  //       toast.error('Failed to load BPMN diagram');
-  //     } finally {
-  //       setDiagramLoading(false);
-  //     }
-  //   };
-  //   fetchDiagram();
-  // }, [instance]);
-  
-  // Fetch task history
-  // useEffect(() => {
-  //   const fetchTasks = async () => {
-  //     if (!processId) return;
-  //
-  //     setTasksLoading(true);
-  //
-  //     try {
-  //       const taskHistory = await api.getInstanceTaskHistory(processId);
-  //       setTasks(taskHistory);
-  //     } catch (error) {
-  //       console.error('Error fetching task history:', error);
-  //       toast.error('Failed to load task history');
-  //     } finally {
-  //       setTasksLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchTasks();
-  // }, [processId]);
-  
-  // Fetch process variables
-  // useEffect(() => {
-  //   const fetchVariables = async () => {
-  //     if (!processId) return;
-  //
-  //     setVariablesLoading(true);
-  //
-  //     try {
-  //       // Mocking variables data - replace with API call in real app
-  //       const mockVariables = [
-  //         { name: 'orderId', value: '12345', type: 'String', scope: 'Process' },
-  //         { name: 'customer', value: '{"name":"John Doe","email":"john@example.com"}', type: 'Json', scope: 'Process' },
-  //         { name: 'amount', value: '199.99', type: 'Double', scope: 'Process' },
-  //         { name: 'approved', value: 'true', type: 'Boolean', scope: 'Task' },
-  //         { name: 'shippingAddress', value: '123 Main St, City', type: 'String', scope: 'Process' },
-  //         { name: 'paymentMethod', value: 'credit_card', type: 'String', scope: 'Process' },
-  //       ];
-  //       setVariables(mockVariables);
-  //     } catch (error) {
-  //       console.error('Error fetching process variables:', error);
-  //       toast.error('Failed to load process variables');
-  //     } finally {
-  //       setVariablesLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchVariables();
-  // }, [processId]);
-  
   // Determine active element in diagram
   const getActiveElementId = () => {
     if (!tasks.length) return undefined;
@@ -159,7 +89,7 @@ const ProcessDetails: React.FC = () => {
       <InstanceSummary instance={instance} loading={loading} />
       
       {/* Process Diagram - Full width */}
-      <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ">
+      <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Process Diagram</h2>
         
         {diagramLoading ? (
@@ -168,7 +98,7 @@ const ProcessDetails: React.FC = () => {
           </div>
         ) : (
           diagramXml ? (
-            <div className="h-[300px]">
+            <div className="h-[300px] relative">
               <BpmnViewer xml={diagramXml}
                           activeElementId={getActiveElementId()}
               />
