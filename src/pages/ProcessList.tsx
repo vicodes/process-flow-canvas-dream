@@ -103,7 +103,7 @@ const ProcessList: React.FC = () => {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
         <div className="glass p-4 rounded-lg animate-fade-in">
           <div className="text-primary-700 text-2xl font-bold">{counts.total}</div>
           <div className="text-gray-500">Total Instances</div>
