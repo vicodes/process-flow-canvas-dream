@@ -22,33 +22,31 @@ const ProcessDetails: React.FC = () => {
   const [variables, setVariables] = useState<any[]>([]);
   const [variablesLoading, setVariablesLoading] = useState(true);
 
-  function getVariables(variables: Map<never, never>) {
-    const variablesMap = new Map(Object.entries(variables));
+  function getVariables(variables: Record<string, any>) {
     const variableObj = []
-    variablesMap.forEach((value, key) =>{
+    for (const [key, value] of Object.entries(variables)) {
       variableObj.push({
         name: key,
         value: JSON.stringify(value),
         type: typeof value,
-        // scope: string;
+        scope: "Process",
         enumerable: true,
       })
-    });
+    }
     return variableObj;
   }
 
-  function getHistory(sequenceExecutions: Map<string, never>) {
+  function getHistory(sequenceExecutions: Record<string, any>) {
     const history = []
-    const sequenceExecutionsMap = new Map(Object.entries(sequenceExecutions));
-    sequenceExecutionsMap.forEach((value, key) =>{
+    for (const [key, value] of Object.entries(sequenceExecutions)) {
       history.push({
-        taskId: `${key}`,
-        taskName: `${value.nodeInformation.name}`,
-        scopeId: `${value.nodeInformation.scopeId}`,
-        status: `${value.state}`,
-        // timestamp: value.toISOString(),
+        taskId: key,
+        taskName: value.nodeInformation?.name || key,
+        scopeId: value.nodeInformation?.scopeId || "default",
+        status: value.state || "UNKNOWN",
+        timestamp: new Date().toISOString(), // Use current date as dummy timestamp
       });
-    });
+    }
     return history;
   }
 
@@ -79,9 +77,13 @@ const ProcessDetails: React.FC = () => {
   // Determine active element in diagram
   const getActiveElementId = () => {
     if (!tasks.length) return undefined;
-    // Find the active task, or the last one if none is active
-    const activeTask = tasks[tasks.length - 1].taskId;
-    return activeTask ? activeTask : undefined;
+    
+    // Find a running task if available
+    const runningTask = tasks.find(task => task.status === 'RUNNING');
+    if (runningTask) return runningTask.taskId;
+    
+    // Otherwise use the last task
+    return tasks[tasks.length - 1]?.taskId;
   };
   
   return (

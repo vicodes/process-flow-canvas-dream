@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
@@ -9,7 +8,6 @@ import ProcessInstanceTable from '@/components/instances/ProcessInstanceTable';
 import { Button } from '@/components/ui/button';
 import { ProcessInstance } from '@/context/AppContext';
 import api from '@/services/apiService';
-import { DateRange } from 'react-day-picker';
 
 const ProcessList: React.FC = () => {
   const { filters, setFilters } = useApp();
@@ -37,10 +35,7 @@ const ProcessList: React.FC = () => {
       
       try {
         const data = await api.getProcessInstances({
-          processId: filters.process ? 
-            // Find the processId that matches the process name
-            (await api.getProcesses()).find(p => p.name === filters.process)?.id : 
-            undefined,
+          processId: filters.process,
           version: filters.version,
           searchText: filters.searchText,
         });
