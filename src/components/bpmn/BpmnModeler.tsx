@@ -1,9 +1,11 @@
+
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
+// Import the properties panel module properly
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel';
-import { Save, Download, Upload, FileUp, FilePlus, Undo, Redo, Eye, LayoutPanelTop } from 'lucide-react';
+import { Save, Download, Upload, FileUp, FilePlus, Undo, Redo, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -57,7 +59,6 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isViewOnly, setIsViewOnly] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
-  const [showPropertiesPanel, setShowPropertiesPanel] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize BPMN modeler
@@ -94,10 +95,7 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           }
           
           const canvas = modeler.get('canvas');
-          if (canvas) {
-            // Fix TS error by using type assertion
-            (canvas as any).zoom('fit-viewport', 'auto');
-          }
+          canvas.zoom('fit-viewport', 'auto');
           
           setIsLoaded(true);
         })
@@ -131,13 +129,8 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     try {
       if (isViewOnly) {
         // For view mode, disable interactions
-        if (modeler.get('palette')) {
-          modeler.get('palette').hide();
-        }
-        
-        if (modeler.get('contextPad')) {
-          modeler.get('contextPad').hide();
-        }
+        modeler.get('palette').hide();
+        modeler.get('contextPad').hide();
         
         // Disable direct editing
         const eventBus = modeler.get('eventBus');
@@ -151,13 +144,8 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
         modeler.get('selection').setOptions({ selectable: false });
       } else {
         // For edit mode, re-enable interactions
-        if (modeler.get('palette')) {
-          modeler.get('palette').show();
-        }
-        
-        if (modeler.get('contextPad')) {
-          modeler.get('contextPad').show();
-        }
+        modeler.get('palette').show();
+        modeler.get('contextPad').show();
         
         // Re-enable direct editing by re-importing the XML
         modeler.get('dragging').setOptions({ disabled: false });
@@ -422,14 +410,14 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
                 <DialogTitle>Import BPMN Diagram</DialogTitle>
               </DialogHeader>
               <div 
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-500 transition-colors dark:border-gray-600 dark:hover:border-primary-400"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-500 transition-colors"
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
               >
-                <FileUp className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500" />
-                <p className="mt-4 mb-2 text-gray-600 dark:text-gray-300">Drag and drop a BPMN file here</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">or</p>
+                <FileUp className="w-12 h-12 mx-auto text-gray-400" />
+                <p className="mt-4 mb-2 text-gray-600">Drag and drop a BPMN file here</p>
+                <p className="text-sm text-gray-500 mb-4">or</p>
                 <div className="flex justify-center">
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <Button variant="default" onClick={() => fileInputRef.current?.click()}>
@@ -471,32 +459,27 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           </Button>
           <div className="flex items-center ml-4 space-x-2">
             <Switch
-              id="properties-panel"
-              checked={showPropertiesPanel}
-              onCheckedChange={setShowPropertiesPanel}
+              id="preview-mode"
+              checked={isViewOnly}
+              onCheckedChange={setIsViewOnly}
             />
-            <Label htmlFor="properties-panel" className="flex items-center">
-              <LayoutPanelTop className="w-4 h-4 mr-1" />
-              Properties Panel
+            <Label htmlFor="preview-mode" className="flex items-center">
+              <Eye className="w-4 h-4 mr-1" />
+              Preview Mode
             </Label>
           </div>
         </div>
       </div>
       
-      <div className="flex flex-col flex-1 overflow-hidden rounded-lg shadow-lg border border-gray-200">
-        {/* Main diagram container */}
+      <div className="flex flex-1 overflow-hidden rounded-lg shadow-lg border border-gray-200">
         <div
           ref={containerRef}
           className="flex-1 bg-white bg-gradient-to-br from-gray-50 to-white"
         ></div>
         
-        {/* Properties panel at the bottom with better spacing */}
         <div
           ref={propertiesPanelRef}
-          className={`h-64 transition-all duration-500 ease-in-out overflow-auto border-t border-gray-200 bg-gray-50 ${
-            isViewOnly || !showPropertiesPanel ? 'hidden' : ''
-          }`}
-          style={{ maxHeight: "30%" }}
+          className={`w-80 transition-all duration-500 ease-in-out overflow-auto border-l border-gray-200 bg-white ${isViewOnly ? 'hidden' : ''}`}
         ></div>
       </div>
     </div>

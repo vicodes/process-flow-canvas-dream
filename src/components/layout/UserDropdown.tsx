@@ -12,113 +12,72 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { useAuth } from '@/context/AuthContext';
 
-export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = false }) => {
+export const UserDropdown: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const { user, logout } = useAuth();
 
   // Check for user preference and system preference on mount
   useEffect(() => {
-    // First check localStorage
-    const storedTheme = localStorage.getItem('theme');
+    const isDark = document.documentElement.classList.contains('dark') ||
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
     
-    // Then check system preference if no stored theme
-    const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Set dark mode based on stored theme or system preference
-    const shouldEnableDarkMode = storedTheme === 'dark' || (!storedTheme && systemPrefersDark);
-    
-    setIsDarkMode(shouldEnableDarkMode);
-    
-    // Apply dark mode class to document
-    if (shouldEnableDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
   }, []);
 
   const toggleDarkMode = () => {
-    const newDarkModeState = !isDarkMode;
-    setIsDarkMode(newDarkModeState);
-    
-    // Apply or remove dark mode class
-    if (newDarkModeState) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark');
     
     // Store preference
-    localStorage.setItem('theme', newDarkModeState ? 'dark' : 'light');
-    
-    // Show feedback to user
-    toast.success(`${newDarkModeState ? 'Dark' : 'Light'} mode enabled`);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout error:', error);
+    if (!isDarkMode) {
+      localStorage.setItem('theme', 'dark');
+    } else {
+      localStorage.setItem('theme', 'light');
     }
   };
 
-  const displayName = user?.name || user?.username || 'User';
-  const initials = displayName
-    .split(' ')
-    .map(name => name[0])
-    .join('')
-    .toUpperCase()
-    .substring(0, 2);
-
-  // Using a profile picture - for demonstration, we're using a placeholder image
-  const profilePicture = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=256&h=256&q=80';
+  const handleLogout = () => {
+    // Add logout functionality here
+    console.log('User logged out');
+    // In a real application, this would clear auth tokens, redirect to login, etc.
+  };
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className={cn(
-        "flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none w-full",
-        collapsed ? "justify-center" : "justify-between"
-      )}>
-        <Avatar className="h-8 w-8 border border-gray-200">
-          <AvatarImage src={profilePicture} alt={displayName} />
-          <AvatarFallback className="bg-primary-100 text-primary-900 dark:bg-primary-900/20 dark:text-primary-300">{initials}</AvatarFallback>
+      <DropdownMenuTrigger className="flex items-center space-x-2 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src="/placeholder.svg" />
+          <AvatarFallback className="bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300">JD</AvatarFallback>
         </Avatar>
-        {!collapsed && (
-          <>
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{displayName}</div>
-            <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-          </>
-        )}
+        <div className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">John Doe</div>
+        <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" side="top" className="w-56">
-        <DropdownMenuLabel className="dark:text-gray-200">My Account</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
         
-        <DropdownMenuItem className="cursor-pointer dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700">
+        <DropdownMenuItem className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
         </DropdownMenuItem>
         
-        <DropdownMenuItem className="cursor-pointer dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700">
+        <DropdownMenuItem className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>
         
-        <DropdownMenuSeparator className="dark:border-gray-700" />
+        <DropdownMenuSeparator />
         
         <div className="px-2 py-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               {isDarkMode ? (
-                <Moon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+                <Moon className="h-4 w-4" />
               ) : (
-                <Sun className="h-4 w-4 text-gray-500" />
+                <Sun className="h-4 w-4" />
               )}
-              <Label htmlFor="dark-mode" className="text-gray-700 dark:text-gray-300">Dark Mode</Label>
+              <Label htmlFor="dark-mode">Dark Mode</Label>
             </div>
             <Switch 
               id="dark-mode" 
@@ -128,12 +87,9 @@ export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = fa
           </div>
         </div>
         
-        <DropdownMenuSeparator className="dark:border-gray-700" />
+        <DropdownMenuSeparator />
         
-        <DropdownMenuItem 
-          className="cursor-pointer text-primary-900 focus:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200 dark:hover:bg-gray-700" 
-          onClick={handleLogout}
-        >
+        <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
@@ -141,9 +97,3 @@ export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = fa
     </DropdownMenu>
   );
 };
-
-function cn(...classes: any[]): string {
-  return classes.filter(Boolean).join(' ');
-}
-
-export default UserDropdown;

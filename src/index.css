@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 330 100% 44%;  /* #E20074 in HSL */
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -39,7 +39,7 @@
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 330 100% 44%;  /* Updated to match primary */
+    --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
@@ -47,7 +47,7 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Custom properties for the app */
-    --primary-color: #E20074;
+    --primary-color: #4F46E5;
     --secondary-color: #14B8A6;
     --success-color: #10B981;
     --warning-color: #F59E0B;
@@ -67,7 +67,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 330 100% 60%;  /* Slightly lighter for dark mode */
+    --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
     
     --secondary: 217.2 32.6% 17.5%;
@@ -88,7 +88,7 @@
 
     --sidebar-background: 222.2 84% 4.9%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 330 100% 60%;  /* Updated to match primary */
+    --sidebar-primary: 210 40% 98%;
     --sidebar-primary-foreground: 222.2 47.4% 11.2%;
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
@@ -96,7 +96,7 @@
     --sidebar-ring: 212.7 26.8% 83.9%;
 
     /* Custom properties for the app - dark mode */
-    --primary-color: #FF3392;  /* Lighter version for dark mode */
+    --primary-color: #6366F1;
     --secondary-color: #2DD4BF;
     --success-color: #34D399;
     --warning-color: #FBBF24;
@@ -186,16 +186,16 @@
   .timeline-dot {
     @apply w-4 h-4 rounded-full border-2 border-white dark:border-gray-800;
   }
-  .timeline-dot.RUNNING {
+  .timeline-dot.active {
     @apply bg-success animate-pulse;
   }
-  .timeline-dot.COMPLETE {
+  .timeline-dot.completed {
     @apply bg-primary-700 dark:bg-primary-400;
   }
-  .timeline-dot.HOLD {
+  .timeline-dot.pending {
     @apply bg-warning;
   }
-  .timeline-dot.INVALID {
+  .timeline-dot.failed {
     @apply bg-destructive;
   }
 
@@ -203,68 +203,76 @@
   .status-badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
-  .status-badge.RUNNING {
-    @apply bg-success/10 text-success dark:bg-success/20 dark:text-green-300 animate-pulse;
+  .status-badge.active {
+    @apply bg-success/10 text-success dark:bg-success/20 animate-pulse;
   }
-  .status-badge.COMPLETED {
+  .status-badge.completed {
     @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300;
   }
-  .status-badge.HOLD {
-    @apply bg-warning/10 text-warning dark:bg-warning/20 dark:text-yellow-300;
+  .status-badge.pending {
+    @apply bg-warning/10 text-warning dark:bg-warning/20;
   }
-  .status-badge.INCIDENT {
-    @apply bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-red-300;
+  .status-badge.failed {
+    @apply bg-destructive/10 text-destructive dark:bg-destructive/20;
   }
 
   /* Table hover effects */
   .table-row-hover {
     @apply transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-gray-800;
   }
-}
 
-/* Dark mode background adjustments - Fix for circular dependency */
-.dark .bg-white {
-  background-color: #111827; /* Dark mode background color */
-}
+  /* BPMN specific styles */
+  .bpmn-container {
+    @apply w-full h-full relative bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm shadow-md rounded-lg overflow-hidden;
+  }
 
-.dark .bg-gray-50 {
-  background-color: #1F2937; /* Dark mode gray-50 color */
-}
+  .bpmn-viewer-container {
+    @apply border border-gray-200 dark:border-gray-700 rounded-lg bg-white/80 dark:bg-gray-800/80 shadow-inner h-full;
+  }
 
-.dark .bg-gray-100 {
-  background-color: #1F2937; /* Dark mode gray-100 color */
-}
+  .bpmn-controls {
+    @apply absolute bottom-4 right-4 flex space-x-2 glass px-3 py-2 rounded-lg;
+  }
 
-.dark .border-gray-200 {
-  border-color: #374151; /* Dark mode border color */
-}
+  .bpmn-control-btn {
+    @apply p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors;
+  }
 
-.dark .shadow-sm {
-  --tw-shadow-color: rgba(17, 24, 39, 0.5); /* Dark mode shadow */
-}
+  /* Active node highlighting in BPMN */
+  .bpmn-highlight {
+    @apply animate-glow;
+  }
 
-.dark .shadow-md {
-  --tw-shadow-color: rgba(17, 24, 39, 0.5); /* Dark mode shadow */
-}
-
-.dark .bg-gradient-soft {
-  background: linear-gradient(135deg, #111827, #1F2937);
-}
-
-/* Process instances cards */
-.dark .glass {
-  background-color: rgba(31, 41, 55, 0.8); /* Dark mode glass background */
-  backdrop-filter: blur(12px);
-  border-color: rgba(55, 65, 81, 0.5); /* Dark mode glass border */
+  /* Sidebar nav item */
+  .nav-item {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-600 dark:text-gray-400;
+  }
+  .nav-item:hover {
+    @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300;
+  }
+  .nav-item.active {
+    @apply bg-gradient-to-r from-primary-700 to-secondary-500 dark:from-primary-600 dark:to-secondary-600 text-white;
+  }
+  .nav-item .icon {
+    @apply transition-transform duration-300;
+  }
+  .nav-item:hover .icon {
+    @apply transform scale-110;
+  }
 }
 
 /* BPMN-JS Custom Styling Overrides */
 :root {
-  --bpmn-primary-color: #E20074;
+  --bpmn-primary-color: #4F46E5;
   --bpmn-secondary-color: #14B8A6;
 }
 
-/* Fixing dark mode issues for BPMN components */
+.dark {
+  --bpmn-primary-color: #6366F1;
+  --bpmn-secondary-color: #2DD4BF;
+}
+
+/* This will be applied to the BPMN-JS elements to match our theme */
 .djs-container .djs-element.highlighted {
   stroke: var(--bpmn-primary-color) !important;
   stroke-width: 2px !important;
@@ -272,11 +280,19 @@
 }
 
 .djs-container .djs-shape.bpmn-task {
-  fill: rgba(226, 0, 116, 0.1) !important; /* Light primary color for tasks */
+  fill: rgba(79, 70, 229, 0.1) !important; /* Light indigo for tasks */
+}
+
+.dark .djs-container .djs-shape.bpmn-task {
+  fill: rgba(99, 102, 241, 0.2) !important; /* Dark mode indigo for tasks */
 }
 
 .djs-container .djs-shape.bpmn-gateway {
   fill: rgba(20, 184, 166, 0.1) !important; /* Light teal for gateways */
+}
+
+.dark .djs-container .djs-shape.bpmn-gateway {
+  fill: rgba(45, 212, 191, 0.2) !important; /* Dark mode teal for gateways */
 }
 
 .djs-container .djs-shape.bpmn-event {
@@ -284,18 +300,9 @@
   stroke: var(--bpmn-primary-color) !important;
 }
 
-/* Overriding dark mode for BPMN elements - keeping light theme even in dark mode */
-.bpmn-viewer-container,
-.bpmn-container {
-  background-color: #FFFFFF !important;
-  border-color: #E5E7EB !important;
-}
-
-/* BPMN editor always in light mode, even in dark mode */
-.dark .bpmn-viewer-container,
-.dark .bpmn-container {
-  background-color: #FFFFFF !important;
-  border-color: #E5E7EB !important;
+.dark .djs-container .djs-shape.bpmn-event {
+  fill: #1F2937 !important;
+  stroke: var(--bpmn-primary-color) !important;
 }
 
 .djs-palette {
@@ -303,207 +310,18 @@
   background-color: #FFFFFF !important;
 }
 
-.djs-palette-entries .entry {
-  color: #374151 !important;
-}
-
-.djs-palette-toggle {
-  background-color: #FFFFFF !important;
-  border-color: #E5E7EB !important;
-  color: #374151 !important;
+.dark .djs-palette {
+  border-color: #374151 !important;
+  background-color: #1F2937 !important;
 }
 
 .djs-popup {
   background-color: #FFFFFF !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0.5rem !important;
 }
 
-.djs-popup .entry {
-  color: #374151 !important;
-}
-
-/* Fixing properties panel in light mode */
-.bpp-properties-panel {
-  background-color: #FFFFFF !important;
-  border-color: #E5E7EB !important;
-  color: #1F2937 !important;
-  padding: 0 !important;
-  font-size: 13px !important;
-}
-
-.bpp-properties-header {
-  border-bottom-color: #E5E7EB !important;
-  color: #1F2937 !important;
-}
-
-.bpp-properties-group {
-  border-bottom-color: #E5E7EB !important;
-  margin: 0 !important;
-  padding: 0.5rem 1rem !important;
-}
-
-.bpp-properties-entry {
-  color: #1F2937 !important;
-  border-bottom-color: #E5E7EB !important;
-  margin: 0.5rem 0 !important;
-}
-
-.bpp-properties-panel input,
-.bpp-properties-panel textarea,
-.bpp-properties-panel select {
-  background-color: #F9FAFB !important;
-  border-color: #E5E7EB !important;
-  color: #1F2937 !important;
-  padding: 0.35rem 0.5rem !important;
-  border-radius: 0.25rem !important;
-}
-
-.bpp-properties-panel [data-entry] .bpp-field-wrapper {
-  background-color: #F9FAFB !important;
-  padding: 0.5rem !important;
-  margin-bottom: 0.5rem !important;
-  border-radius: 0.25rem !important;
-}
-
-.bpp-properties-panel button {
-  background-color: #F3F4F6 !important;
-  color: #1F2937 !important;
-}
-
-.bpp-properties-tab-bar {
-  border-bottom-color: #E5E7EB !important;
-}
-
-.bpp-properties-tab-bar .bpp-active {
-  border-top-color: #E20074 !important;
-  color: #1F2937 !important;
-}
-
-.bpp-properties-panel label {
-  margin-bottom: 0.25rem !important;
-  font-weight: 500 !important;
-}
-
-/* Table styling for dark mode */
-.dark table {
-  background-color: rgba(17, 24, 39, 0.5); /* Dark mode table background */
-  border-color: #374151; /* Dark mode table border */
-}
-
-.dark table th {
-  background-color: #1F2937; /* Dark mode table header background */
-  color: #E5E7EB; /* Dark mode table header text */
-  border-color: #374151; /* Dark mode table header border */
-}
-
-.dark table tr {
-  border-color: #374151; /* Dark mode table row border */
-}
-
-.dark table td {
-  border-color: #374151; /* Dark mode table cell border */
-  color: #D1D5DB; /* Dark mode table cell text */
-}
-
-/* BPMN container styling */
-.bpmn-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.bpmn-viewer-container {
-  border: 1px solid #E5E7EB;
-  border-radius: 0.5rem;
-  background-color: #FFFFFF;
-  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-  height: 100%;
-}
-
-.bpmn-controls {
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  display: flex;
-  column-gap: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  padding: 0.75rem 0.5rem;
-  border-radius: 0.5rem;
-}
-
-.bpmn-control-btn {
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.bpmn-control-btn:hover {
-  background-color: #F3F4F6;
-}
-
-/* Active node highlighting in BPMN */
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px rgba(226, 0, 116, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(226, 0, 116, 0.6); }
-}
-
-.bpmn-highlight {
-  animation: glow 1.5s ease-in-out infinite;
-}
-
-/* Sidebar nav item */
-.nav-item {
-  display: flex;
-  align-items: center;
-  column-gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  color: #4B5563;
-}
-
-.dark .nav-item {
-  color: #9CA3AF;
-}
-
-.nav-item:hover {
-  background-color: rgba(226, 0, 116, 0.1);
-  color: #E20074;
-}
-
-.dark .nav-item:hover {
-  background-color: rgba(17, 24, 39, 0.5);
-  color: #FF3392;
-}
-
-.nav-item.active {
-  background: linear-gradient(to right, #E20074, #14B8A6);
-  color: #FFFFFF;
-}
-
-.dark .nav-item.active {
-  background: linear-gradient(to right, #FF3392, #2DD4BF);
-  color: #FFFFFF;
-}
-
-.nav-item .icon {
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-}
-
-.nav-item:hover .icon {
-  transform: scale(1.1);
+.dark .djs-popup {
+  background-color: #1F2937 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }

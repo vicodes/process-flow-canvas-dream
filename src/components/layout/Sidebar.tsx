@@ -7,11 +7,9 @@ import {
   PenSquare,
   MessageSquare,
   ArrowLeft, 
-  ArrowRight,
-  Database
+  ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { UserDropdown } from './UserDropdown';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -42,12 +40,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       active: location.pathname.startsWith('/processes/'),
     },
     {
-      name: 'DMN Decisions',
-      icon: <Database className="w-5 h-5" />,
-      href: '/dmns',
-      active: location.pathname === '/dmns' || location.pathname.startsWith('/dmns/'),
-    },
-    {
       name: 'Process Modeler',
       icon: <PenSquare className="w-5 h-5" />,
       href: '/modeler',
@@ -64,14 +56,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside 
       className={cn(
-        'fixed top-[64px] left-0 z-40 h-[calc(100vh-64px)] transition-all duration-300 ease-in-out bg-white border-r shadow-sm dark:bg-gray-800 dark:border-gray-700',
+        'fixed top-[64px] left-0 z-40 h-[calc(100vh-64px)] transition-all duration-300 ease-in-out bg-white border-r shadow-sm',
         collapsed ? 'w-16' : 'w-64'
       )}
     >
       <div className="flex flex-col h-full">
         <button
           onClick={toggleCollapse}
-          className="p-2 mx-auto my-4 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+          className="p-2 mx-auto my-4 rounded-full hover:bg-gray-100 transition-colors duration-200"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
@@ -86,8 +78,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 'flex items-center px-3 py-2 rounded-md transition-colors',
                 collapsed ? 'justify-center' : 'justify-start',
                 item.active 
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300' 
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-primary-100 text-primary-700' 
+                  : 'text-gray-700 hover:bg-gray-100'
               )}
               title={collapsed ? item.name : ""}
             >
@@ -96,17 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </Link>
           ))}
         </nav>
-        
-        {/* User dropdown moved to the bottom of sidebar with improved styling */}
-        <div className={cn(
-          "mt-auto border-t border-gray-200 dark:border-gray-700 p-4",
-          collapsed ? "flex justify-center" : ""
-        )}>
-          <UserDropdown collapsed={collapsed} />
-        </div>
       </div>
     </aside>
   );
 };
-
-export default Sidebar;

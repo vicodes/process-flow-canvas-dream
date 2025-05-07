@@ -1,32 +1,18 @@
+
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { useApp } from '@/context/AppContext';
-import ProcessFilters, { ProcessFilters as FiltersType } from '@/components/filters/ProcessFilters';
-import ProcessVersionFilters from '@/components/filters/ProcessVersionFilters';
+import ProcessFilters from '@/components/filters/ProcessFilters';
 import ProcessInstanceTable from '@/components/instances/ProcessInstanceTable';
 import { Button } from '@/components/ui/button';
 import { ProcessInstance } from '@/context/AppContext';
 import api from '@/services/apiService';
 
 const ProcessList: React.FC = () => {
-  const { filters, setFilters } = useApp();
+  const { filters } = useApp();
   const [instances, setInstances] = useState<ProcessInstance[]>([]);
   const [loading, setLoading] = useState(true);
-  const [localFilters, setLocalFilters] = useState<FiltersType>({
-    search: "",
-    status: "",
-    dateRange: undefined
-  });
-  
-  // Handle process and version filter changes
-  const handleVersionFiltersChange = (versionFilters: { process: string; version: string }) => {
-    setFilters({
-      ...filters,
-      process: versionFilters.process,
-      version: versionFilters.version
-    });
-  };
   
   // Fetch process instances
   useEffect(() => {
@@ -35,44 +21,15 @@ const ProcessList: React.FC = () => {
       
       try {
         const data = await api.getProcessInstances({
-          processId: filters.process,
+          processId: filters.process ? 
+            // Find the processId that matches the process name
+            (await api.getProcesses()).find(p => p.name === filters.process)?.id : 
+            undefined,
           version: filters.version,
           searchText: filters.searchText,
         });
         
-        let filteredData = [...data];
-        
-        // Apply additional filters (from ProcessFilters component)
-        if (localFilters.search) {
-          filteredData = filteredData.filter(instance => 
-            instance.processName.toLowerCase().includes(localFilters.search.toLowerCase()) ||
-            instance.processId.toLowerCase().includes(localFilters.search.toLowerCase())
-          );
-        }
-        
-        if (localFilters.status && localFilters.status !== 'all') {
-          filteredData = filteredData.filter(instance => 
-            instance.status.toLowerCase() === localFilters.status.toLowerCase()
-          );
-        }
-        
-        if (localFilters.dateRange && localFilters.dateRange.from) {
-          const fromDate = new Date(localFilters.dateRange.from);
-          filteredData = filteredData.filter(instance => {
-            const instanceDate = new Date(instance.startDate);
-            return instanceDate >= fromDate;
-          });
-          
-          if (localFilters.dateRange.to) {
-            const toDate = new Date(localFilters.dateRange.to);
-            filteredData = filteredData.filter(instance => {
-              const instanceDate = new Date(instance.startDate);
-              return instanceDate <= toDate;
-            });
-          }
-        }
-        
-        setInstances(filteredData);
+        setInstances(data);
       } catch (error) {
         console.error('Error fetching process instances:', error);
         toast.error('Failed to load process instances');
@@ -82,19 +39,14 @@ const ProcessList: React.FC = () => {
     };
     
     fetchInstances();
-  }, [filters, localFilters]);
-  
-  // Handle filter changes
-  const handleFilterChange = (newFilters: FiltersType) => {
-    setLocalFilters(newFilters);
-  };
+  }, [filters]);
   
   // Export instances to CSV
   const handleExportCSV = async () => {
     try {
       // Prepare data for export
       const exportData = instances.map(instance => ({
-        ID: instance.processId,
+        ID: instance.id,
         ProcessName: instance.processName,
         Version: instance.processVersion,
         Status: instance.status,
@@ -102,7 +54,7 @@ const ProcessList: React.FC = () => {
         EndDate: instance.endDate || ''
       }));
       
-      // Generate CSV with proper type
+      // Generate CSV
       const csvContent = await api.exportToCSV(exportData);
       
       // Create download
@@ -127,8 +79,8 @@ const ProcessList: React.FC = () => {
   
   // Get summary counts
   const getInstancesCount = () => {
-    const active = instances.filter(i => i.status === 'RUNNING').length;
-    const completed = instances.filter(i => i.status === 'COMPLETED').length;
+    const active = instances.filter(i => i.status === 'active').length;
+    const completed = instances.filter(i => i.status === 'completed').length;
     
     return { total: instances.length, active, completed };
   };
@@ -168,14 +120,7 @@ const ProcessList: React.FC = () => {
         </div>
       </div>
       
-      {/* Process and Version filters */}
-      <ProcessVersionFilters onFiltersChange={handleVersionFiltersChange} />
-      
-      {/* Additional filters */}
-      <ProcessFilters 
-        onFilterChange={handleFilterChange} 
-        onExport={handleExportCSV} 
-      />
+      <ProcessFilters />
       
       <ProcessInstanceTable instances={instances} loading={loading} />
     </div>

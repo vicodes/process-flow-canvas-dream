@@ -1,4 +1,3 @@
-
 import * as React from "react"
 
 import type {
@@ -7,7 +6,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 5000
+const TOAST_REMOVE_DELAY = 1000000
 
 type ToasterToast = ToastProps & {
   id: string
@@ -91,6 +90,8 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
+      // ! Side effects ! - This could be extracted into a dismissToast() action,
+      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -167,49 +168,24 @@ function toast({ ...props }: Toast) {
   }
 }
 
-// Create a React context for the toast state
-const ToastContext = React.createContext<{
-  toasts: ToasterToast[];
-  toast: typeof toast;
-  dismiss: (toastId?: string) => void;
-} | undefined>(undefined);
-
-// Provider component
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ 
-  children 
-}) => {
-  const [state, setState] = React.useState<State>(memoryState);
+function useToast() {
+  const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
-    listeners.push(setState);
+    listeners.push(setState)
     return () => {
-      const index = listeners.indexOf(setState);
+      const index = listeners.indexOf(setState)
       if (index > -1) {
-        listeners.splice(index, 1);
+        listeners.splice(index, 1)
       }
-    };
-  }, []);
+    }
+  }, [state])
 
-  const value = React.useMemo(() => ({
-    toasts: state.toasts,
+  return {
+    ...state,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-  }), [state.toasts]);
-
-  return (
-    <ToastContext.Provider value={value}>
-      {children}
-    </ToastContext.Provider>
-  );
-};
-
-// Hook to use toast
-export function useToast() {
-  const context = React.useContext(ToastContext);
-  if (context === undefined) {
-    throw new Error("useToast must be used within a ToastProvider");
   }
-  return context;
 }
 
-export { toast }
+export { useToast, toast }
