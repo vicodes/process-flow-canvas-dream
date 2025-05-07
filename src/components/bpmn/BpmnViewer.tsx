@@ -5,6 +5,7 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import { ZoomIn, ZoomOut, Move, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const bpmnViewerRef = useRef<BpmnJS | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const initBpmnViewer = useCallback(() => {
     if (containerRef.current) {
@@ -62,7 +64,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
           const dragging = viewer.get('dragging');
           
           if (dragging && eventBus) {
-            // Allow dragging of the canvas (panning)
+            // Only enable dragging on the canvas, not on diagram elements
             eventBus.on('element.mousedown', function(e) {
               // Only enable dragging on the canvas, not on diagram elements
               if (!e.element.id || e.element.id === '__implicitroot' || e.element.type === 'bpmn:Process') {
@@ -70,6 +72,51 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
               }
             });
           }
+          
+          // Add click handler for DMN tasks
+          const eventBus = viewer.get('eventBus');
+          eventBus.on('element.click', (event) => {
+            const element = event.element;
+            
+            // Check if the clicked element is a DMN task
+            if (element.type === 'bpmn:BusinessRuleTask' || 
+                (element.businessObject && element.businessObject.implementation === 'dmn')) {
+              console.log('DMN task clicked:', element);
+              
+              // Extract DMN ID from the element if available
+              let dmnId = null;
+              
+              // Try to get DMN ID from businessObject properties
+              if (element.businessObject) {
+                // Check different possible properties where DMN ID might be stored
+                dmnId = element.businessObject.decisionRef 
+                      || element.businessObject.dmnId 
+                      || element.businessObject.dmnTaskId;
+                      
+                // If no direct DMN ID, try to extract from other attributes
+                if (!dmnId && element.businessObject.extensionElements) {
+                  // Process extension elements if they exist
+                  const extensions = element.businessObject.extensionElements.values;
+                  for (const ext of extensions) {
+                    if (ext.dmnId || ext.decisionRef || ext.decisionRefId) {
+                      dmnId = ext.dmnId || ext.decisionRef || ext.decisionRefId;
+                      break;
+                    }
+                  }
+                }
+              }
+              
+              // If still no DMN ID, use element ID as fallback
+              if (!dmnId) {
+                dmnId = 'dmn-1'; // Default DMN ID if none is found
+                console.log('No DMN ID found in element, using default:', dmnId);
+              }
+              
+              // Navigate to DMN details page
+              toast.info(`Navigating to DMN: ${dmnId}`);
+              navigate(`/dmns/${dmnId}`);
+            }
+          });
           
           setIsLoaded(true);
           
@@ -83,7 +130,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ xml, activeElementId }) => {
           toast.error('Failed to load BPMN diagram');
         });
     }
-  }, [xml, activeElementId]);
+  }, [xml, activeElementId, navigate]);
 
   useEffect(() => {
     initBpmnViewer();
