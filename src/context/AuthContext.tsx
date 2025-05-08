@@ -6,6 +6,7 @@ interface AuthUser {
   name: string;
   email: string;
   role: 'admin' | 'user' | 'guest';
+  // Removed username as it's not used
 }
 
 interface AuthContextType {

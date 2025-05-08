@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -95,7 +94,9 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
           }
           
           const canvas = modeler.get('canvas');
-          canvas.zoom('fit-viewport', 'auto');
+          if (canvas && typeof canvas.zoom === 'function') {
+            canvas.zoom('fit-viewport');
+          }
           
           setIsLoaded(true);
         })

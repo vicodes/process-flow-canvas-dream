@@ -66,7 +66,8 @@ export const UserDropdown: React.FC<{ collapsed?: boolean }> = ({ collapsed = fa
     }
   };
 
-  const displayName = user?.name || user?.username || 'User';
+  // Fixed displayName to use only name, not username
+  const displayName = user?.name || 'User';
   const initials = displayName
     .split(' ')
     .map(name => name[0])

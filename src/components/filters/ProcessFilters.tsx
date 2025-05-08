@@ -1,3 +1,4 @@
+
 import React, {useState, useEffect} from 'react';
 import {Check, X, Search} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -12,6 +13,15 @@ import {
 import {useApp} from '@/context/AppContext';
 import api from '@/services/apiService';
 
+// Define proper interface for process data
+interface Process {
+  id: string;
+  name: string;
+  description: string;
+  version: string;
+  processDefinitionId?: string; // Adding this field
+}
+
 const ProcessFilters: React.FC = () => {
   const {filters, setFilters, clearFilters} = useApp();
   const [processes, setProcesses] = useState<{ id: string; name: string }[]>([]);
@@ -22,13 +32,13 @@ const ProcessFilters: React.FC = () => {
   useEffect(() => {
     const fetchProcesses = async () => {
       try {
-        const data = await api.getProcesses();
-        // Extract unique processes
+        const data = await api.getProcesses() as Process[];
+        // Extract unique processes - use name as processDefinitionId if not available
         const uniqueProcesses = Array.from(
-            new Set(data.map(p => p.processDefinitionId))
-        ).map(name => {
-          const process = data.find(p => p.processDefinitionId === name);
-          return {id: process?.id, name: name};
+            new Set(data.map(p => p.processDefinitionId || p.name))
+        ).map(processId => {
+          const process = data.find(p => (p.processDefinitionId || p.name) === processId);
+          return {id: process?.id || '', name: processId};
         });
         setProcesses(uniqueProcesses);
         setLoading(false);
@@ -49,10 +59,10 @@ const ProcessFilters: React.FC = () => {
       }
 
       try {
-        const data = await api.getProcesses();
-        // Filter versions for selected process
+        const data = await api.getProcesses() as Process[];
+        // Filter versions for selected process using processDefinitionId or name
         const processVersions = data
-            .filter(p => p.processDefinitionId === filters.process)
+            .filter(p => (p.processDefinitionId || p.name) === filters.process)
             .map(p => p.version);
 
         setVersions(processVersions);
