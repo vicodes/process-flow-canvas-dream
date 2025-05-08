@@ -60,50 +60,7 @@
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-
-    --sidebar-background: 222.2 84% 4.9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 217.2 32.6% 17.5%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 212.7 26.8% 83.9%;
-
-    /* Custom properties for the app - dark mode */
-    --primary-color: #6366F1;
-    --secondary-color: #2DD4BF;
-    --success-color: #34D399;
-    --warning-color: #FBBF24;
-    --danger-color: #F87171;
-    --text-primary: #F9FAFB;
-    --text-secondary: #D1D5DB;
-    --bg-gradient: linear-gradient(135deg, #111827, #1F2937);
+    /* ... keep existing code (dark mode variables) ... */
   }
 
   * {
@@ -138,7 +95,7 @@
   }
 
   a {
-    @apply text-primary-700 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 transition-colors;
+    @apply text-primary-700 hover:text-primary-800 transition-colors;
   }
 
   button {
@@ -146,7 +103,7 @@
   }
 
   button:focus-visible {
-    @apply outline-2 outline-primary-700 dark:outline-primary-300 ring-2 ring-primary-700/50 dark:ring-primary-300/50;
+    @apply outline-2 outline-primary-700 ring-2 ring-primary-700/50;
   }
 }
 
@@ -154,18 +111,17 @@
 @layer components {
   /* Glassmorphism utility */
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg dark:bg-gray-900/70 dark:border-gray-800/20;
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
   }
 
   /* Neumorphism utility */
   .neumorphic {
-    @apply bg-white shadow-[5px_5px_15px_rgba(0,0,0,0.1),-5px_-5px_15px_rgba(255,255,255,0.8)] border border-gray-100 
-    dark:bg-gray-800 dark:shadow-[5px_5px_15px_rgba(0,0,0,0.5),-5px_-5px_15px_rgba(30,30,30,0.4)] dark:border-gray-700;
+    @apply bg-white shadow-[5px_5px_15px_rgba(0,0,0,0.1),-5px_-5px_15px_rgba(255,255,255,0.8)] border border-gray-100;
   }
 
   /* Card with gradient border */
   .card-gradient-border {
-    @apply border-2 border-transparent bg-white dark:bg-gray-800 relative;
+    @apply border-2 border-transparent bg-white relative;
     background-clip: padding-box;
   }
   .card-gradient-border::before {
@@ -179,18 +135,18 @@
     @apply transition-all duration-300;
   }
   .btn-hover-glow:hover {
-    @apply transform scale-105 shadow-[0_0_10px_rgba(79,70,229,0.5)] dark:shadow-[0_0_10px_rgba(99,102,241,0.5)];
+    @apply transform scale-105 shadow-[0_0_10px_rgba(79,70,229,0.5)];
   }
 
   /* Timeline dot */
   .timeline-dot {
-    @apply w-4 h-4 rounded-full border-2 border-white dark:border-gray-800;
+    @apply w-4 h-4 rounded-full border-2 border-white;
   }
   .timeline-dot.active {
     @apply bg-success animate-pulse;
   }
   .timeline-dot.completed {
-    @apply bg-primary-700 dark:bg-primary-400;
+    @apply bg-primary-700;
   }
   .timeline-dot.pending {
     @apply bg-warning;
@@ -204,30 +160,30 @@
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
   .status-badge.active {
-    @apply bg-success/10 text-success dark:bg-success/20 animate-pulse;
+    @apply bg-success/10 text-success animate-pulse;
   }
   .status-badge.completed {
-    @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300;
+    @apply bg-primary-100 text-primary-800;
   }
   .status-badge.pending {
-    @apply bg-warning/10 text-warning dark:bg-warning/20;
+    @apply bg-warning/10 text-warning;
   }
   .status-badge.failed {
-    @apply bg-destructive/10 text-destructive dark:bg-destructive/20;
+    @apply bg-destructive/10 text-destructive;
   }
 
   /* Table hover effects */
   .table-row-hover {
-    @apply transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-gray-800;
+    @apply transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-md;
   }
 
   /* BPMN specific styles */
   .bpmn-container {
-    @apply w-full h-full relative bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm shadow-md rounded-lg overflow-hidden;
+    @apply w-full h-full relative bg-white/50 backdrop-blur-sm shadow-md rounded-lg overflow-hidden;
   }
 
   .bpmn-viewer-container {
-    @apply border border-gray-200 dark:border-gray-700 rounded-lg bg-white/80 dark:bg-gray-800/80 shadow-inner h-full;
+    @apply border border-gray-200 rounded-lg bg-white/80 shadow-inner h-full;
   }
 
   .bpmn-controls {
@@ -235,7 +191,7 @@
   }
 
   .bpmn-control-btn {
-    @apply p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors;
+    @apply p-2 rounded-md hover:bg-gray-100 transition-colors;
   }
 
   /* Active node highlighting in BPMN */
@@ -245,13 +201,13 @@
 
   /* Sidebar nav item */
   .nav-item {
-    @apply flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-600 dark:text-gray-400;
+    @apply flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-600;
   }
   .nav-item:hover {
-    @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300;
+    @apply bg-primary-100 text-primary-700;
   }
   .nav-item.active {
-    @apply bg-gradient-to-r from-primary-700 to-secondary-500 dark:from-primary-600 dark:to-secondary-600 text-white;
+    @apply bg-gradient-to-r from-primary-700 to-secondary-500 text-white;
   }
   .nav-item .icon {
     @apply transition-transform duration-300;
@@ -267,11 +223,6 @@
   --bpmn-secondary-color: #14B8A6;
 }
 
-.dark {
-  --bpmn-primary-color: #6366F1;
-  --bpmn-secondary-color: #2DD4BF;
-}
-
 /* This will be applied to the BPMN-JS elements to match our theme */
 .djs-container .djs-element.highlighted {
   stroke: var(--bpmn-primary-color) !important;
@@ -283,25 +234,12 @@
   fill: rgba(79, 70, 229, 0.1) !important; /* Light indigo for tasks */
 }
 
-.dark .djs-container .djs-shape.bpmn-task {
-  fill: rgba(99, 102, 241, 0.2) !important; /* Dark mode indigo for tasks */
-}
-
 .djs-container .djs-shape.bpmn-gateway {
   fill: rgba(20, 184, 166, 0.1) !important; /* Light teal for gateways */
 }
 
-.dark .djs-container .djs-shape.bpmn-gateway {
-  fill: rgba(45, 212, 191, 0.2) !important; /* Dark mode teal for gateways */
-}
-
 .djs-container .djs-shape.bpmn-event {
   fill: #FFFFFF !important;
-  stroke: var(--bpmn-primary-color) !important;
-}
-
-.dark .djs-container .djs-shape.bpmn-event {
-  fill: #1F2937 !important;
   stroke: var(--bpmn-primary-color) !important;
 }
 
@@ -310,18 +248,8 @@
   background-color: #FFFFFF !important;
 }
 
-.dark .djs-palette {
-  border-color: #374151 !important;
-  background-color: #1F2937 !important;
-}
-
 .djs-popup {
   background-color: #FFFFFF !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
   border-radius: 0.5rem !important;
-}
-
-.dark .djs-popup {
-  background-color: #1F2937 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }

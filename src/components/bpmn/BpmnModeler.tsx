@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import BpmnJS from 'bpmn-js/lib/Modeler';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -42,6 +43,13 @@ const emptyBpmn = `<?xml version="1.0" encoding="UTF-8"?>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
+
+// Custom type for canvas
+interface BpmnCanvas {
+  zoom: (type: string, options?: any) => void;
+  hideLayer: (layer: string) => void;
+  showLayer: (layer: string) => void;
+}
 
 interface BpmnModelerProps {
   initialXml?: string;
@@ -93,10 +101,8 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
             console.warn('BPMN import warnings:', warnings);
           }
           
-          const canvas = modeler.get('canvas');
-          if (canvas && typeof canvas.zoom === 'function') {
-            canvas.zoom('fit-viewport');
-          }
+          const canvas = modeler.get('canvas') as BpmnCanvas;
+          canvas.zoom('fit-viewport', 'auto');
           
           setIsLoaded(true);
         })
@@ -120,42 +126,32 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
     };
   }, [initBpmnModeler]);
 
-  // Toggle view mode - Fixing the preview mode issue
+  // Toggle view mode
   useEffect(() => {
     if (!bpmnModelerRef.current || !isLoaded) return;
     
     console.log("Toggle view mode:", isViewOnly);
-    const modeler = bpmnModelerRef.current;
-    
+    const canvas = bpmnModelerRef.current.get('canvas') as BpmnCanvas;
+    const eventBus = bpmnModelerRef.current.get('eventBus');
+
     try {
       if (isViewOnly) {
-        // For view mode, disable interactions
-        modeler.get('palette').hide();
-        modeler.get('contextPad').hide();
+        // Hide controls for view mode
+        canvas.hideLayer('controls');
         
         // Disable direct editing
-        const eventBus = modeler.get('eventBus');
-        eventBus.on('element.dblclick', function(event: any) {
+        eventBus.on('directEditing.activate', (event: any) => {
           event.preventDefault();
           return false;
         });
-        
-        // Disable drag and select
-        modeler.get('dragging').setOptions({ disabled: true });
-        modeler.get('selection').setOptions({ selectable: false });
       } else {
-        // For edit mode, re-enable interactions
-        modeler.get('palette').show();
-        modeler.get('contextPad').show();
+        // Show controls for edit mode
+        canvas.showLayer('controls');
         
         // Re-enable direct editing by re-importing the XML
-        modeler.get('dragging').setOptions({ disabled: false });
-        modeler.get('selection').setOptions({ selectable: true });
-        
-        // Re-enable direct editing by refreshing the modeler
-        modeler.saveXML({ format: true })
+        bpmnModelerRef.current.saveXML({ format: true })
           .then(({ xml }: { xml: string }) => {
-            modeler.importXML(xml);
+            bpmnModelerRef.current.importXML(xml);
           });
       }
     } catch (error) {
@@ -488,3 +484,4 @@ const BpmnModeler: React.FC<BpmnModelerProps> = ({
 };
 
 export default BpmnModeler;
+

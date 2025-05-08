@@ -1,15 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loader2, Code, History } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import BpmnViewer from '@/components/bpmn/BpmnViewer';
 import InstanceSummary from '@/components/instances/InstanceSummary';
 import TaskTimeline from '@/components/instances/TaskTimeline';
-import ProcessVariables from '@/components/instances/ProcessVariables';
 import { ProcessInstance } from '@/context/AppContext';
 import api from '@/services/apiService';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const ProcessDetails: React.FC = () => {
   const { processId } = useParams<{ processId: string }>();
@@ -19,8 +17,6 @@ const ProcessDetails: React.FC = () => {
   const [diagramLoading, setDiagramLoading] = useState(true);
   const [tasks, setTasks] = useState<any[]>([]);
   const [tasksLoading, setTasksLoading] = useState(true);
-  const [variables, setVariables] = useState<any[]>([]);
-  const [variablesLoading, setVariablesLoading] = useState(true);
   
   // Fetch process instance
   useEffect(() => {
@@ -85,35 +81,6 @@ const ProcessDetails: React.FC = () => {
     fetchTasks();
   }, [processId]);
   
-  // Fetch process variables
-  useEffect(() => {
-    const fetchVariables = async () => {
-      if (!processId) return;
-      
-      setVariablesLoading(true);
-      
-      try {
-        // Mocking variables data - replace with API call in real app
-        const mockVariables = [
-          { name: 'orderId', value: '12345', type: 'String', scope: 'Process' },
-          { name: 'customer', value: '{"name":"John Doe","email":"john@example.com"}', type: 'Json', scope: 'Process' },
-          { name: 'amount', value: '199.99', type: 'Double', scope: 'Process' },
-          { name: 'approved', value: 'true', type: 'Boolean', scope: 'Task' },
-          { name: 'shippingAddress', value: '123 Main St, City', type: 'String', scope: 'Process' },
-          { name: 'paymentMethod', value: 'credit_card', type: 'String', scope: 'Process' },
-        ];
-        setVariables(mockVariables);
-      } catch (error) {
-        console.error('Error fetching process variables:', error);
-        toast.error('Failed to load process variables');
-      } finally {
-        setVariablesLoading(false);
-      }
-    };
-    
-    fetchVariables();
-  }, [processId]);
-  
   // Determine active element in diagram
   const getActiveElementId = () => {
     if (!tasks.length) return undefined;
@@ -136,49 +103,31 @@ const ProcessDetails: React.FC = () => {
     <div className="space-y-6">
       <InstanceSummary instance={instance} loading={loading} />
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Process Diagram</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold mb-4">Process Diagram</h2>
             
             {diagramLoading ? (
-              <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <Loader2 className="w-8 h-8 text-primary-500 dark:text-primary-400 animate-spin" />
+              <div className="flex items-center justify-center h-96 bg-gray-50 border border-gray-200 rounded-lg">
+                <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
               </div>
             ) : (
               diagramXml ? (
                 <BpmnViewer xml={diagramXml} activeElementId={getActiveElementId()} />
               ) : (
-                <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <p className="text-gray-500 dark:text-gray-400">No diagram available</p>
+                <div className="flex items-center justify-center h-96 bg-gray-50 border border-gray-200 rounded-lg">
+                  <p className="text-gray-500">No diagram available</p>
                 </div>
               )
             )}
           </div>
         </div>
         
-        <div className="lg:col-span-4">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <Tabs defaultValue="variables" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="variables" className="flex items-center">
-                  <Code className="w-4 h-4 mr-2" />
-                  Variables
-                </TabsTrigger>
-                <TabsTrigger value="history" className="flex items-center">
-                  <History className="w-4 h-4 mr-2" />
-                  Task History
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="variables" className="mt-0">
-                <ProcessVariables variables={variables} isLoading={variablesLoading} />
-              </TabsContent>
-              
-              <TabsContent value="history" className="mt-0">
-                <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
-              </TabsContent>
-            </Tabs>
+        <div>
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-lg font-semibold mb-4">Task History</h2>
+            <TaskTimeline tasks={tasks} isLoading={tasksLoading} />
           </div>
         </div>
       </div>

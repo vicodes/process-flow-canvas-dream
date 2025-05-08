@@ -33,12 +33,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       href: '/',
       active: location.pathname === '/',
     },
-    // {
-    //   name: 'Instance Details',
-    //   icon: <List className="w-5 h-5" />,
-    //   href: location.pathname.startsWith('/processes/') ? location.pathname : '/processes/inst-001',
-    //   active: location.pathname.startsWith('/processes/'),
-    // },
+    {
+      name: 'Instance Details',
+      icon: <List className="w-5 h-5" />,
+      href: location.pathname.startsWith('/processes/') ? location.pathname : '/processes/inst-001',
+      active: location.pathname.startsWith('/processes/'),
+    },
     {
       name: 'Process Modeler',
       icon: <PenSquare className="w-5 h-5" />,

@@ -2,16 +2,13 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
-import { Navbar } from './Navbar';
 import { cn } from '@/lib/utils';
 
 const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-soft">
-      <Navbar />
-      
+    <div className="flex flex-col min-h-screen bg-gradient-soft">      
       <div className="flex flex-1">
         <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         
