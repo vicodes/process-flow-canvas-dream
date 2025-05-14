@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, Settings, Cpu, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { LoadingIcon } from '@/components/ui/loading-icon';
 import {
   Select,
   SelectContent,
@@ -38,6 +39,42 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o-mini');
+  const [pollingStatus, setPollingStatus] = useState<'idle' | 'polling'>('idle');
+
+  // Function to poll the API every 5 seconds
+  useEffect(() => {
+    const pollAPI = async () => {
+      try {
+        // Simulate API call
+        const response = await fetch('https://api.example.com/status', { 
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }).catch(() => {
+          // Handle network errors silently for polling
+          return null;
+        });
+        
+        // If we wanted to do something with the response, we would do it here
+        console.log('Polling API for updates...');
+      } catch (error) {
+        // Silent error handling for polling
+        console.error('Error polling API:', error);
+      }
+    };
+
+    const intervalId = setInterval(() => {
+      if (pollingStatus === 'polling') {
+        pollAPI();
+      }
+    }, 5000);
+
+    // Start polling when component mounts
+    setPollingStatus('polling');
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [pollingStatus]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -276,7 +313,7 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
         </div>
       </ScrollArea>
       
-      <form onSubmit={handleSendMessage} className="p-3 border-t flex gap-2">
+      <form onSubmit={handleSendMessage} className="p-3 border-t flex gap-2 relative">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -287,6 +324,13 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
         <Button type="submit" size="icon" disabled={isLoading}>
           <Send className="h-4 w-4" />
         </Button>
+        
+        {/* Loading icon in bottom left corner */}
+        {pollingStatus === 'polling' && (
+          <div className="absolute left-3 bottom-[-15px]">
+            <LoadingIcon size={12} className="text-primary/70" />
+          </div>
+        )}
       </form>
     </div>
   );
