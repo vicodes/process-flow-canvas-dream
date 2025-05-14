@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Send, Settings, Cpu, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -39,7 +38,7 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o-mini');
-  const [pollingStatus, setPollingStatus] = useState<'idle' | 'polling'>('idle');
+  const [pollingStatus, setPollingStatus] = useState<'idle' | 'polling'>('polling'); // Changed to start polling by default
 
   // Function to poll the API every 5 seconds
   useEffect(() => {
@@ -67,9 +66,6 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
         pollAPI();
       }
     }, 5000);
-
-    // Start polling when component mounts
-    setPollingStatus('polling');
 
     return () => {
       clearInterval(intervalId);
@@ -325,10 +321,10 @@ const BpmnGeneratorChat: React.FC<BpmnGeneratorChatProps> = ({ onBpmnGenerated }
           <Send className="h-4 w-4" />
         </Button>
         
-        {/* Loading icon in bottom left corner */}
+        {/* Loading icon with improved visibility */}
         {pollingStatus === 'polling' && (
-          <div className="absolute left-3 bottom-[-15px]">
-            <LoadingIcon size={12} className="text-primary/70" />
+          <div className="absolute left-4 bottom-[-8px] bg-white p-1 rounded-full shadow-sm border border-gray-100">
+            <LoadingIcon size={14} className="text-primary" />
           </div>
         )}
       </form>

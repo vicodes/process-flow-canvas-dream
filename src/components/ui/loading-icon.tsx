@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Loader } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface LoadingIconProps {
@@ -10,8 +10,8 @@ interface LoadingIconProps {
 
 const LoadingIcon: React.FC<LoadingIconProps> = ({ className, size = 16 }) => {
   return (
-    <Loader 
-      className={cn('animate-spin text-primary', className)} 
+    <Loader2 
+      className={cn('animate-spin', className)} 
       size={size}
     />
   );
